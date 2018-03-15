@@ -378,7 +378,10 @@ public class FSelectManager<T>
         }
 
         reset();
-        initItems(mListItem);
+        for (T item : mListItem)
+        {
+            onInitItem(item);
+        }
     }
 
     /**
@@ -391,7 +394,12 @@ public class FSelectManager<T>
         if (items != null)
         {
             mListItem.addAll(items);
-            initItems(items);
+
+            for (T item : items)
+            {
+                synchronizeSelected(item);
+                onInitItem(item);
+            }
         }
     }
 
@@ -433,14 +441,6 @@ public class FSelectManager<T>
             }
         }
         listRemove(mListItem, item);
-    }
-
-    private void initItems(List<T> items)
-    {
-        for (T item : items)
-        {
-            onInitItem(item);
-        }
     }
 
     /**
