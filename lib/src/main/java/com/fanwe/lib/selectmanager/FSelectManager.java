@@ -305,24 +305,6 @@ public class FSelectManager<T>
 
     }
 
-    private void resetIndex()
-    {
-        switch (mMode)
-        {
-            case SINGLE:
-            case SINGLE_MUST_ONE_SELECTED:
-                mCurrentIndex = -1;
-                break;
-            case MULTI:
-            case MULTI_MUST_ONE_SELECTED:
-                mMapSelectedIndexItem.clear();
-                break;
-
-            default:
-                break;
-        }
-
-    }
 
     private boolean isIndexLegal(int index)
     {
@@ -571,33 +553,38 @@ public class FSelectManager<T>
      */
     public void clearSelected()
     {
-        switch (mMode)
+        if (isSingleMode())
         {
-            case SINGLE:
-            case SINGLE_MUST_ONE_SELECTED:
-                if (mCurrentIndex >= 0)
+            if (mCurrentIndex >= 0)
+            {
+                final int tempCurrentIndex = mCurrentIndex;
+                resetIndex();
+                notifyNormal(tempCurrentIndex);
+            }
+        } else
+        {
+            if (!mMapSelectedIndexItem.isEmpty())
+            {
+                final Iterator<Entry<Integer, T>> it = mMapSelectedIndexItem.entrySet().iterator();
+                while (it.hasNext())
                 {
-                    final int tempCurrentIndex = mCurrentIndex;
-                    resetIndex();
-                    notifyNormal(tempCurrentIndex);
+                    final Entry<Integer, T> item = it.next();
+                    it.remove();
+                    notifyNormal(item.getKey());
                 }
-                break;
-            case MULTI:
-            case MULTI_MUST_ONE_SELECTED:
-                if (!mMapSelectedIndexItem.isEmpty())
-                {
-                    final Iterator<Entry<Integer, T>> it = mMapSelectedIndexItem.entrySet().iterator();
-                    while (it.hasNext())
-                    {
-                        final Entry<Integer, T> item = it.next();
-                        it.remove();
-                        notifyNormal(item.getKey());
-                    }
-                    resetIndex();
-                }
-                break;
-            default:
-                break;
+                resetIndex();
+            }
+        }
+    }
+
+    private void resetIndex()
+    {
+        if (isSingleMode())
+        {
+            mCurrentIndex = -1;
+        } else
+        {
+            mMapSelectedIndexItem.clear();
         }
     }
 
