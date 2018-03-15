@@ -309,7 +309,7 @@ public class FSelectManager<T>
      * @param item
      * @return
      */
-    public int indexOfItem(T item)
+    public final int indexOfItem(T item)
     {
         return listIndexOfItem(mListItem, item);
     }
@@ -317,7 +317,7 @@ public class FSelectManager<T>
     /**
      * 清除选中
      */
-    public void clearSelected()
+    public final void clearSelected()
     {
         if (isSingleMode())
         {
@@ -416,6 +416,21 @@ public class FSelectManager<T>
      */
     public final void removeItem(T item)
     {
+        if (isSelected(item))
+        {
+            if (isSingleMode())
+            {
+                clearSelected();
+            } else
+            {
+                setSelected(item, false);
+                if (isSelected(item))
+                {
+                    // 多选必选模式，并且当前仅有一项item，直接清空选中
+                    clearSelected();
+                }
+            }
+        }
         listRemove(mListItem, item);
     }
 
