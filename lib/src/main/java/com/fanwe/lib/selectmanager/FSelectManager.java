@@ -304,17 +304,6 @@ public class FSelectManager<T>
     }
 
     /**
-     * 返回item的位置
-     *
-     * @param item
-     * @return
-     */
-    public final int indexOfItem(T item)
-    {
-        return listIndexOfItem(mListItem, item);
-    }
-
-    /**
      * 清除选中
      */
     public final void clearSelected()
@@ -342,6 +331,19 @@ public class FSelectManager<T>
             }
         }
     }
+
+    /**
+     * 返回item的位置
+     *
+     * @param item
+     * @return
+     */
+    public final int indexOfItem(T item)
+    {
+        return listIndexOfItem(mListItem, item);
+    }
+
+    //---------- data start ----------
 
     /**
      * 设置数据
@@ -496,6 +498,8 @@ public class FSelectManager<T>
         onInitItem(item);
     }
 
+    //---------- data end ----------
+
     /**
      * 设置数据后会遍历调用此方法对每个数据进行初始化
      *
@@ -514,6 +518,8 @@ public class FSelectManager<T>
             setSelected(item, selected);
         }
     }
+
+    //---------- utils start ----------
 
     private static <T> boolean listContains(List<T> list, T item)
     {
@@ -569,6 +575,8 @@ public class FSelectManager<T>
         }
         return false;
     }
+
+    //---------- utils end ----------
 
     public enum Mode
     {
