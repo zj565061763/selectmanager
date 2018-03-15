@@ -179,7 +179,7 @@ public class FSelectManager<T>
      * @param item
      * @param selected
      */
-    public void setSelected(T item, boolean selected)
+    public final void setSelected(T item, boolean selected)
     {
         if (item == null)
         {
