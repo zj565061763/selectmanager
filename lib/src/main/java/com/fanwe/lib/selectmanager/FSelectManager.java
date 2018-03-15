@@ -409,6 +409,16 @@ public class FSelectManager<T>
         }
     }
 
+    /**
+     * 移除数据
+     *
+     * @param item
+     */
+    public final void removeItem(T item)
+    {
+        listRemove(mListItem, item);
+    }
+
     private void initItems(List<T> list)
     {
         for (T item : list)
@@ -471,11 +481,11 @@ public class FSelectManager<T>
         return -1;
     }
 
-    private static <T> void listRemove(List<T> list, T item)
+    private static <T> boolean listRemove(List<T> list, T item)
     {
         if (item == null)
         {
-            return;
+            return false;
         }
 
         final Iterator<T> it = list.iterator();
@@ -485,8 +495,10 @@ public class FSelectManager<T>
             if (value == item)
             {
                 it.remove();
+                return true;
             }
         }
+        return false;
     }
 
     public enum Mode
