@@ -29,7 +29,7 @@ public class FSelectManager<T>
      *
      * @param callback
      */
-    public void addCallback(Callback<T> callback)
+    public void addCallback(final Callback<T> callback)
     {
         if (callback == null || mListCallback.contains(callback))
         {
@@ -43,7 +43,7 @@ public class FSelectManager<T>
      *
      * @param callback
      */
-    public void removeCallback(Callback<T> callback)
+    public void removeCallback(final Callback<T> callback)
     {
         mListCallback.remove(callback);
     }
@@ -53,9 +53,9 @@ public class FSelectManager<T>
      *
      * @param enable
      */
-    public void setEnable(boolean enable)
+    public void setEnable(final boolean enable)
     {
-        this.mIsEnable = enable;
+        mIsEnable = enable;
     }
 
     /**
@@ -83,7 +83,7 @@ public class FSelectManager<T>
      *
      * @param mode
      */
-    public void setMode(Mode mode)
+    public void setMode(final Mode mode)
     {
         if (mode == null)
         {
@@ -116,9 +116,9 @@ public class FSelectManager<T>
      * @param item
      * @return
      */
-    public boolean isSelected(T item)
+    public boolean isSelected(final T item)
     {
-        int index = indexOfItem(item);
+        final int index = indexOfItem(item);
         return isSelected(index);
     }
 
@@ -128,33 +128,20 @@ public class FSelectManager<T>
      * @param index
      * @return
      */
-    public boolean isSelected(int index)
+    public boolean isSelected(final int index)
     {
-        boolean selected = false;
-        if (index >= 0)
+        if (index < 0)
         {
-            switch (mMode)
-            {
-                case SINGLE:
-                case SINGLE_MUST_ONE_SELECTED:
-                    if (index == mCurrentIndex)
-                    {
-                        selected = true;
-                    }
-                    break;
-                case MULTI:
-                case MULTI_MUST_ONE_SELECTED:
-                    if (mMapSelectedIndexItem.containsKey(index))
-                    {
-                        selected = true;
-                    }
-                    break;
-
-                default:
-                    break;
-            }
+            return false;
         }
-        return selected;
+
+        if (isSingleMode())
+        {
+            return index == mCurrentIndex;
+        } else
+        {
+            return mMapSelectedIndexItem.containsKey(index);
+        }
     }
 
     public void synchronizeSelected()
