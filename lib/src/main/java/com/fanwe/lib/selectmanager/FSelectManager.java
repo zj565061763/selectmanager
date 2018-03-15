@@ -15,13 +15,15 @@ import java.util.Map.Entry;
  */
 public class FSelectManager<T>
 {
-    private List<T> mListItem = new ArrayList<T>();
+    private Mode mMode = Mode.SINGLE_MUST_ONE_SELECTED;
+    private List<T> mListItem = new ArrayList<>();
+
     private int mCurrentIndex = -1;
     private int mLastIndex = -1;
-    private Map<Integer, T> mMapSelectedIndexItem = new LinkedHashMap<>();
-    private Mode mMode = Mode.SINGLE_MUST_ONE_SELECTED;
-    private boolean mIsEnable = true;
 
+    private Map<Integer, T> mMapSelectedIndexItem = new LinkedHashMap<>();
+
+    private boolean mIsEnable = true;
     private List<Callback<T>> mListCallback = new ArrayList<>();
 
     /**
