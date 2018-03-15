@@ -324,7 +324,7 @@ public class FSelectManager<T>
             if (mCurrentItem != null)
             {
                 final T old = mCurrentItem;
-                reset();
+                mCurrentItem = null;
                 notifyNormal(old);
             }
         } else
@@ -338,15 +338,9 @@ public class FSelectManager<T>
                     it.remove();
                     notifyNormal(item);
                 }
-                reset();
+                mListSelected.clear(); //再清一次
             }
         }
-    }
-
-    private void reset()
-    {
-        mCurrentItem = null;
-        mListSelected.clear();
     }
 
     /**
@@ -371,13 +365,15 @@ public class FSelectManager<T>
      */
     public final void setItems(List<T> items)
     {
+        mCurrentItem = null;
+        mListSelected.clear();
         mListItem.clear();
+
         if (items != null)
         {
             mListItem.addAll(items);
         }
 
-        reset();
         for (T item : mListItem)
         {
             onInitItem(item);
