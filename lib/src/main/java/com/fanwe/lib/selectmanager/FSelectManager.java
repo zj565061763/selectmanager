@@ -19,8 +19,6 @@ public class FSelectManager<T>
     private List<T> mListItem = new ArrayList<>();
 
     private int mCurrentIndex = -1;
-    private int mLastIndex = -1;
-
     private Map<Integer, T> mMapSelectedIndexItem = new LinkedHashMap<>();
 
     private boolean mIsEnable = true;
@@ -68,11 +66,6 @@ public class FSelectManager<T>
     public boolean isEnable()
     {
         return mIsEnable;
-    }
-
-    public int getLastIndex()
-    {
-        return mLastIndex;
     }
 
     public Mode getMode()
@@ -341,14 +334,6 @@ public class FSelectManager<T>
     }
 
     /**
-     * 设置最后一次选中的位置选中(单选模式)
-     */
-    public void selectLastIndex()
-    {
-        setSelected(mLastIndex, true);
-    }
-
-    /**
      * 全选或者全部取消
      *
      * @param select true-全选，false-全部取消
@@ -499,8 +484,6 @@ public class FSelectManager<T>
 
             notifyNormal(tempCurrentIndex);
             notifySelected(mCurrentIndex);
-
-            mLastIndex = mCurrentIndex;
         }
     }
 
