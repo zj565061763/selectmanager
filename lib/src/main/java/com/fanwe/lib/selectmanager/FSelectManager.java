@@ -85,11 +85,12 @@ public class FSelectManager<T>
      */
     public void setMode(Mode mode)
     {
-        if (mode != null)
+        if (mode == null)
         {
-            clearSelected();
-            this.mMode = mode;
+            return;
         }
+        clearSelected();
+        mMode = mode;
     }
 
     /**
@@ -99,21 +100,17 @@ public class FSelectManager<T>
      */
     public boolean isSingleMode()
     {
-        boolean single = false;
         switch (mMode)
         {
             case SINGLE:
             case SINGLE_MUST_ONE_SELECTED:
-                single = true;
-                break;
+                return true;
             case MULTI:
             case MULTI_MUST_ONE_SELECTED:
-                single = false;
-                break;
+                return false;
             default:
-                break;
+                return false;
         }
-        return single;
     }
 
     /**
