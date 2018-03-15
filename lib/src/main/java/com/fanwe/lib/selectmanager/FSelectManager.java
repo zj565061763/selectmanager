@@ -368,7 +368,6 @@ public class FSelectManager<T>
         mCurrentItem = null;
         mListSelected.clear();
         mListItem.clear();
-
         if (items != null)
         {
             mListItem.addAll(items);
@@ -438,6 +437,45 @@ public class FSelectManager<T>
             }
         }
         listRemove(mListItem, item);
+    }
+
+    /**
+     * 插入数据
+     *
+     * @param index
+     * @param item
+     */
+    public final void insertItem(int index, T item)
+    {
+        if (item == null)
+        {
+            return;
+        }
+
+        mListItem.add(index, item);
+        synchronizeSelected(item);
+        onInitItem(item);
+    }
+
+    /**
+     * 插入数据
+     *
+     * @param index
+     * @param items
+     */
+    public final void insertItem(int index, List<T> items)
+    {
+        if (items == null || items.isEmpty())
+        {
+            return;
+        }
+
+        mListItem.addAll(index, items);
+        for (T item : items)
+        {
+            synchronizeSelected(item);
+            onInitItem(item);
+        }
     }
 
     /**
