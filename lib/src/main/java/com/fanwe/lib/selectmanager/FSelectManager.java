@@ -3,10 +3,7 @@ package com.fanwe.lib.selectmanager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * 选择管理器
@@ -18,8 +15,8 @@ public class FSelectManager<T>
     private Mode mMode = Mode.SINGLE_MUST_ONE_SELECTED;
     private List<T> mListItem = new ArrayList<>();
 
-    private int mCurrentIndex = -1;
-    private Map<Integer, T> mMapSelectedIndexItem = new LinkedHashMap<>();
+    private T mCurrentItem;
+    private List<T> mListSelected = new ArrayList<>();
 
     private boolean mIsEnable = true;
     private List<Callback<T>> mListCallback = new ArrayList<>();
@@ -29,7 +26,7 @@ public class FSelectManager<T>
      *
      * @param callback
      */
-    public void addCallback(final Callback<T> callback)
+    public final void addCallback(final Callback<T> callback)
     {
         if (callback == null || mListCallback.contains(callback))
         {
@@ -43,7 +40,7 @@ public class FSelectManager<T>
      *
      * @param callback
      */
-    public void removeCallback(final Callback<T> callback)
+    public final void removeCallback(final Callback<T> callback)
     {
         mListCallback.remove(callback);
     }
@@ -53,7 +50,7 @@ public class FSelectManager<T>
      *
      * @param enable
      */
-    public void setEnable(final boolean enable)
+    public final void setEnable(final boolean enable)
     {
         mIsEnable = enable;
     }
@@ -63,14 +60,9 @@ public class FSelectManager<T>
      *
      * @return
      */
-    public boolean isEnable()
+    public final boolean isEnable()
     {
         return mIsEnable;
-    }
-
-    public Mode getMode()
-    {
-        return mMode;
     }
 
     /**
@@ -78,7 +70,7 @@ public class FSelectManager<T>
      *
      * @param mode
      */
-    public void setMode(final Mode mode)
+    public final void setMode(final Mode mode)
     {
         if (mode == null)
         {
@@ -89,11 +81,21 @@ public class FSelectManager<T>
     }
 
     /**
+     * 返回当前的模式
+     *
+     * @return
+     */
+    public final Mode getMode()
+    {
+        return mMode;
+    }
+
+    /**
      * 是否单选模式
      *
      * @return
      */
-    public boolean isSingleMode()
+    public final boolean isSingleMode()
     {
         switch (mMode)
         {
@@ -106,78 +108,25 @@ public class FSelectManager<T>
     }
 
     /**
-     * 项是否被选中
+     * 某个Item是否被选中
      *
      * @param item
      * @return
      */
-    public boolean isSelected(final T item)
+    public final boolean isSelected(final T item)
     {
-        final int index = indexOfItem(item);
-        return isSelected(index);
-    }
-
-    /**
-     * 项是否被选中
-     *
-     * @param index
-     * @return
-     */
-    public boolean isSelected(final int index)
-    {
-        if (index < 0)
+        if (item == null)
         {
             return false;
         }
 
         if (isSingleMode())
         {
-            return index == mCurrentIndex;
+            return item == mCurrentItem;
         } else
         {
-            return mMapSelectedIndexItem.containsKey(index);
+            return listContains(mListSelected, item);
         }
-    }
-
-    public void synchronizeSelected()
-    {
-        synchronizeSelected(mListItem);
-    }
-
-    public void synchronizeSelected(List<T> items)
-    {
-        if (items != null)
-        {
-            for (T item : items)
-            {
-                synchronizeSelected(item);
-            }
-        }
-    }
-
-    public void synchronizeSelected(T item)
-    {
-        synchronizeSelected(indexOfItem(item));
-    }
-
-    private void synchronizeSelected(int index)
-    {
-        T model = getItem(index);
-        if (model instanceof FSelectManager.Selectable)
-        {
-            Selectable sModel = (Selectable) model;
-            setSelected(index, sModel.isSelected());
-        }
-    }
-
-    /**
-     * 获得选中项的位置(单选模式)
-     *
-     * @return
-     */
-    public int getSelectedIndex()
-    {
-        return mCurrentIndex;
     }
 
     /**
@@ -185,27 +134,9 @@ public class FSelectManager<T>
      *
      * @return
      */
-    public T getSelectedItem()
+    public final T getSelectedItem()
     {
-        return getItem(mCurrentIndex);
-    }
-
-    /**
-     * 获得选中项的位置(多选模式)
-     *
-     * @return
-     */
-    public List<Integer> getSelectedIndexs()
-    {
-        List<Integer> listIndex = new ArrayList<>();
-        if (!mMapSelectedIndexItem.isEmpty())
-        {
-            for (Entry<Integer, T> item : mMapSelectedIndexItem.entrySet())
-            {
-                listIndex.add(item.getKey());
-            }
-        }
-        return listIndex;
+        return mCurrentItem;
     }
 
     /**
@@ -213,106 +144,9 @@ public class FSelectManager<T>
      *
      * @return
      */
-    public List<T> getSelectedItems()
+    public final List<T> getSelectedItems()
     {
-        List<T> listItem = new ArrayList<T>();
-        if (!mMapSelectedIndexItem.isEmpty())
-        {
-            for (Entry<Integer, T> item : mMapSelectedIndexItem.entrySet())
-            {
-                listItem.add(item.getValue());
-            }
-        }
-        return listItem;
-    }
-
-    public void setItems(T... items)
-    {
-        List<T> listItem = null;
-        if (items != null && items.length > 0)
-        {
-            listItem = Arrays.asList(items);
-        }
-        setItems(listItem);
-    }
-
-    public void setItems(List<T> items)
-    {
-        if (items != null)
-        {
-            mListItem = items;
-        } else
-        {
-            mListItem.clear();
-        }
-        resetIndex();
-        initItems(mListItem);
-    }
-
-    public void appendItems(List<T> items, boolean addAll)
-    {
-        if (items != null && !items.isEmpty())
-        {
-            if (!mListItem.isEmpty())
-            {
-                if (addAll)
-                {
-                    mListItem.addAll(items);
-                }
-                initItems(items);
-            } else
-            {
-                setItems(items);
-            }
-        }
-    }
-
-    public void appendItem(T item, boolean add)
-    {
-        if (!mListItem.isEmpty() && item != null)
-        {
-            if (add)
-            {
-                mListItem.add(item);
-            }
-            initItem(indexOfItem(item), item);
-        }
-    }
-
-    private void initItems(List<T> items)
-    {
-        if (items != null && !items.isEmpty())
-        {
-            T item = null;
-            int index = 0;
-            for (int i = 0; i < items.size(); i++)
-            {
-                item = items.get(i);
-                index = indexOfItem(item);
-                initItem(index, item);
-            }
-        }
-    }
-
-    /**
-     * 设置数据后会遍历调用此方法对每个数据进行初始化
-     *
-     * @param index
-     * @param item
-     */
-    protected void initItem(int index, T item)
-    {
-
-    }
-
-
-    private boolean isIndexLegal(int index)
-    {
-        if (index >= 0 && index < mListItem.size())
-        {
-            return true;
-        }
-        return false;
+        return new ArrayList<>(mListSelected);
     }
 
     /**
@@ -320,25 +154,11 @@ public class FSelectManager<T>
      *
      * @param select true-全选，false-全部取消
      */
-    public void selectAll(boolean select)
+    public final void selectAll(boolean select)
     {
-        for (int i = 0; i < mListItem.size(); i++)
+        for (T item : mListItem)
         {
-            setSelected(i, select);
-        }
-    }
-
-    /**
-     * 模拟点击该项
-     *
-     * @param index
-     */
-    public void performClick(int index)
-    {
-        if (isIndexLegal(index))
-        {
-            boolean selected = isSelected(index);
-            setSelected(index, !selected);
+            setSelected(item, select);
         }
     }
 
@@ -347,37 +167,29 @@ public class FSelectManager<T>
      *
      * @param item
      */
-    public void performClick(T item)
+    public final void performClick(T item)
     {
-        performClick(indexOfItem(item));
+        final boolean selected = isSelected(item);
+        setSelected(item, !selected);
     }
 
     /**
-     * 设置该项的选中状态
+     * 设置该位置的选中状态
      *
      * @param item
      * @param selected
      */
     public void setSelected(T item, boolean selected)
     {
-        int index = indexOfItem(item);
-        setSelected(index, selected);
-    }
-
-    /**
-     * 设置该位置的选中状态
-     *
-     * @param index
-     * @param selected
-     */
-    public void setSelected(int index, boolean selected)
-    {
+        if (item == null)
+        {
+            return;
+        }
         if (!mIsEnable)
         {
             return;
         }
-
-        if (!isIndexLegal(index))
+        if (!listContains(mListItem, item))
         {
             return;
         }
@@ -387,28 +199,21 @@ public class FSelectManager<T>
             case SINGLE_MUST_ONE_SELECTED:
                 if (selected)
                 {
-                    selectItemSingle(index);
-                } else
-                {
-                    if (mCurrentIndex == index)
-                    {
-                    } else
-                    {
-                    }
+                    selectItemSingle(item);
                 }
                 break;
             case SINGLE:
                 if (selected)
                 {
-                    selectItemSingle(index);
+                    selectItemSingle(item);
                 } else
                 {
-                    if (mCurrentIndex == index)
+                    if (mCurrentItem == item)
                     {
-                        final int tempCurrentIndex = mCurrentIndex;
-                        mCurrentIndex = -1;
+                        final T old = mCurrentItem;
+                        mCurrentItem = null;
 
-                        notifyNormal(tempCurrentIndex);
+                        notifyNormal(old);
                     } else
                     {
                     }
@@ -417,35 +222,29 @@ public class FSelectManager<T>
             case MULTI_MUST_ONE_SELECTED:
                 if (selected)
                 {
-                    selectItemMulti(index);
+                    selectItemMulti(item);
                 } else
                 {
-                    if (mMapSelectedIndexItem.containsKey(index))
+                    if (listContains(mListSelected, item))
                     {
-                        if (mMapSelectedIndexItem.size() == 1)
+                        if (mListSelected.size() > 1)
                         {
-                        } else
-                        {
-                            mMapSelectedIndexItem.remove(index);
-                            notifyNormal(index);
+                            listRemove(mListSelected, item);
+                            notifyNormal(item);
                         }
-                    } else
-                    {
                     }
                 }
                 break;
             case MULTI:
                 if (selected)
                 {
-                    selectItemMulti(index);
+                    selectItemMulti(item);
                 } else
                 {
-                    if (mMapSelectedIndexItem.containsKey(index))
+                    if (listContains(mListSelected, item))
                     {
-                        mMapSelectedIndexItem.remove(index);
-                        notifyNormal(index);
-                    } else
-                    {
+                        listRemove(mListSelected, item);
+                        notifyNormal(item);
                     }
                 }
                 break;
@@ -455,81 +254,53 @@ public class FSelectManager<T>
         }
     }
 
-    private void selectItemSingle(int index)
+    private void selectItemSingle(T item)
     {
-        if (mCurrentIndex == index)
+        if (mCurrentItem != item)
         {
-        } else
-        {
-            final int tempCurrentIndex = mCurrentIndex;
-            mCurrentIndex = index;
+            final T old = mCurrentItem;
+            mCurrentItem = item;
 
-            notifyNormal(tempCurrentIndex);
-            notifySelected(mCurrentIndex);
+            notifyNormal(old);
+            notifySelected(item);
         }
     }
 
-    private void selectItemMulti(int index)
+    private void selectItemMulti(T item)
     {
-        if (mMapSelectedIndexItem.containsKey(index))
+        if (!listContains(mListSelected, item))
         {
-        } else
-        {
-            mMapSelectedIndexItem.put(index, getItem(index));
-            notifySelected(index);
+            mListSelected.add(item);
+            notifySelected(item);
         }
     }
 
-    private void notifyNormal(int index)
+    private void notifyNormal(T item)
     {
-        if (isIndexLegal(index))
+        for (Callback<T> callback : mListCallback)
         {
-            notifyNormal(index, getItem(index));
+            callback.onNormal(item);
         }
+        onNormal(item);
     }
 
-    private void notifySelected(int index)
+    private void notifySelected(T item)
     {
-        if (isIndexLegal(index))
+        for (Callback<T> callback : mListCallback)
         {
-            notifySelected(index, getItem(index));
+            callback.onSelected(item);
         }
+        onSelected(item);
     }
 
-    protected void notifyNormal(final int index, final T item)
+    protected void onNormal(T item)
     {
-        Iterator<Callback<T>> it = mListCallback.iterator();
-        while (it.hasNext())
-        {
-            Callback<T> callback = it.next();
-            callback.onNormal(index, item);
-        }
+
     }
 
-    protected void notifySelected(final int index, final T item)
+    protected void onSelected(T item)
     {
-        Iterator<Callback<T>> it = mListCallback.iterator();
-        while (it.hasNext())
-        {
-            Callback<T> callback = it.next();
-            callback.onSelected(index, item);
-        }
-    }
 
-    /**
-     * 获得该位置的item
-     *
-     * @param index
-     * @return
-     */
-    public T getItem(int index)
-    {
-        T item = null;
-        if (isIndexLegal(index))
-        {
-            item = mListItem.get(index);
-        }
-        return item;
     }
 
     /**
@@ -540,12 +311,7 @@ public class FSelectManager<T>
      */
     public int indexOfItem(T item)
     {
-        int index = -1;
-        if (item != null)
-        {
-            index = mListItem.indexOf(item);
-        }
-        return index;
+        return listIndexOfItem(mListItem, item);
     }
 
     /**
@@ -555,36 +321,171 @@ public class FSelectManager<T>
     {
         if (isSingleMode())
         {
-            if (mCurrentIndex >= 0)
+            if (mCurrentItem != null)
             {
-                final int tempCurrentIndex = mCurrentIndex;
-                resetIndex();
-                notifyNormal(tempCurrentIndex);
+                final T old = mCurrentItem;
+                reset();
+                notifyNormal(old);
             }
         } else
         {
-            if (!mMapSelectedIndexItem.isEmpty())
+            if (!mListSelected.isEmpty())
             {
-                final Iterator<Entry<Integer, T>> it = mMapSelectedIndexItem.entrySet().iterator();
+                final Iterator<T> it = mListSelected.iterator();
                 while (it.hasNext())
                 {
-                    final Entry<Integer, T> item = it.next();
+                    final T item = it.next();
                     it.remove();
-                    notifyNormal(item.getKey());
+                    notifyNormal(item);
                 }
-                resetIndex();
+                reset();
             }
         }
     }
 
-    private void resetIndex()
+    private void reset()
     {
-        if (isSingleMode())
+        mCurrentItem = null;
+        mListSelected.clear();
+    }
+
+    /**
+     * 设置数据
+     *
+     * @param items
+     */
+    public final void setItems(T... items)
+    {
+        List<T> listItem = null;
+        if (items != null && items.length > 0)
         {
-            mCurrentIndex = -1;
-        } else
+            listItem = Arrays.asList(items);
+        }
+        setItems(listItem);
+    }
+
+    /**
+     * 设置数据
+     *
+     * @param items
+     */
+    public final void setItems(List<T> items)
+    {
+        mListItem.clear();
+        if (items != null)
         {
-            mMapSelectedIndexItem.clear();
+            mListItem.addAll(items);
+        }
+
+        reset();
+        initItems(mListItem);
+    }
+
+    /**
+     * 添加数据
+     *
+     * @param items
+     */
+    public final void appendItems(List<T> items)
+    {
+        if (items != null)
+        {
+            mListItem.addAll(items);
+            initItems(items);
+        }
+    }
+
+    /**
+     * 添加数据
+     *
+     * @param item
+     */
+    public final void appendItem(T item)
+    {
+        if (item != null)
+        {
+            mListItem.add(item);
+            onInitItem(item);
+        }
+    }
+
+    private void initItems(List<T> list)
+    {
+        for (T item : list)
+        {
+            onInitItem(item);
+        }
+    }
+
+    /**
+     * 设置数据后会遍历调用此方法对每个数据进行初始化
+     *
+     * @param item
+     */
+    protected void onInitItem(T item)
+    {
+        synchronizeSelected(item);
+    }
+
+    private void synchronizeSelected(T item)
+    {
+        if (item instanceof Selectable)
+        {
+            final boolean selected = ((Selectable) item).isSelected();
+            setSelected(item, selected);
+        }
+    }
+
+    private static <T> boolean listContains(List<T> list, T item)
+    {
+        if (item == null)
+        {
+            return false;
+        }
+        for (T value : list)
+        {
+            if (value == item)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static <T> int listIndexOfItem(List<T> list, T item)
+    {
+        if (item == null)
+        {
+            return -1;
+        }
+
+        int i = 0;
+        for (T value : list)
+        {
+            if (value == item)
+            {
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
+
+    private static <T> void listRemove(List<T> list, T item)
+    {
+        if (item == null)
+        {
+            return;
+        }
+
+        final Iterator<T> it = list.iterator();
+        while (it.hasNext())
+        {
+            final T value = it.next();
+            if (value == item)
+            {
+                it.remove();
+            }
         }
     }
 
@@ -637,17 +538,15 @@ public class FSelectManager<T>
         /**
          * item正常回调
          *
-         * @param index
          * @param item
          */
-        void onNormal(int index, T item);
+        void onNormal(T item);
 
         /**
          * item选中回调
          *
-         * @param index
          * @param item
          */
-        void onSelected(int index, T item);
+        void onSelected(T item);
     }
 }

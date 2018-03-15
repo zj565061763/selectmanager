@@ -5,14 +5,6 @@ import android.view.View.OnClickListener;
 
 public class FSelectViewManager<T extends View> extends FSelectManager<T>
 {
-    @Override
-    protected void initItem(int index, T item)
-    {
-        item.setOnClickListener(mOnClickListener);
-        notifyNormal(index, item);
-        super.initItem(index, item);
-    }
-
     private OnClickListener mOnClickListener = new OnClickListener()
     {
         @Override
@@ -23,16 +15,24 @@ public class FSelectViewManager<T extends View> extends FSelectManager<T>
     };
 
     @Override
-    protected void notifyNormal(int index, T item)
+    protected void onInitItem(T item)
     {
-        item.setSelected(false);
-        super.notifyNormal(index, item);
+        super.onInitItem(item);
+        item.setOnClickListener(mOnClickListener);
+        onNormal(item);
     }
 
     @Override
-    protected void notifySelected(int index, T item)
+    protected void onNormal(T item)
     {
+        super.onNormal(item);
+        item.setSelected(false);
+    }
+
+    @Override
+    protected void onSelected(T item)
+    {
+        super.onSelected(item);
         item.setSelected(true);
-        super.notifySelected(index, item);
     }
 }
