@@ -391,15 +391,16 @@ public class FSelectManager<T>
      */
     public final void appendItems(List<T> items)
     {
-        if (items != null)
+        if (items == null)
         {
-            mListItem.addAll(items);
+            return;
+        }
 
-            for (T item : items)
-            {
-                synchronizeSelected(item);
-                onInitItem(item);
-            }
+        mListItem.addAll(items);
+        for (T item : items)
+        {
+            synchronizeSelected(item);
+            onInitItem(item);
         }
     }
 
