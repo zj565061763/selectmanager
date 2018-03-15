@@ -105,9 +105,6 @@ public class FSelectManager<T>
             case SINGLE:
             case SINGLE_MUST_ONE_SELECTED:
                 return true;
-            case MULTI:
-            case MULTI_MUST_ONE_SELECTED:
-                return false;
             default:
                 return false;
         }
