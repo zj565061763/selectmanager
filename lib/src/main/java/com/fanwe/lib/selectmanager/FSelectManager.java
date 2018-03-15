@@ -13,13 +13,13 @@ import java.util.List;
 public class FSelectManager<T>
 {
     private Mode mMode = Mode.SINGLE_MUST_ONE_SELECTED;
-    private List<T> mListItem = new ArrayList<>();
+    private final List<T> mListItem = new ArrayList<>();
 
     private T mCurrentItem;
-    private List<T> mListSelected = new ArrayList<>();
+    private final List<T> mListSelected = new ArrayList<>();
 
     private boolean mIsEnable = true;
-    private List<Callback<T>> mListCallback = new ArrayList<>();
+    private final List<Callback<T>> mListCallback = new ArrayList<>();
 
     /**
      * 添加选择状态回调
