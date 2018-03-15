@@ -435,9 +435,9 @@ public class FSelectManager<T>
         listRemove(mListItem, item);
     }
 
-    private void initItems(List<T> list)
+    private void initItems(List<T> items)
     {
-        for (T item : list)
+        for (T item : items)
         {
             onInitItem(item);
         }
