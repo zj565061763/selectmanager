@@ -405,6 +405,7 @@ public class FSelectManager<T>
         if (item != null)
         {
             mListItem.add(item);
+            synchronizeSelected(item);
             onInitItem(item);
         }
     }
@@ -449,7 +450,7 @@ public class FSelectManager<T>
      */
     protected void onInitItem(T item)
     {
-        synchronizeSelected(item);
+
     }
 
     private void synchronizeSelected(T item)
