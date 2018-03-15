@@ -479,6 +479,24 @@ public class FSelectManager<T>
     }
 
     /**
+     * 更新数据
+     *
+     * @param index
+     * @param item
+     */
+    public final void updateItem(int index, T item)
+    {
+        if (item == null)
+        {
+            return;
+        }
+
+        mListItem.set(index, item);
+        synchronizeSelected(item);
+        onInitItem(item);
+    }
+
+    /**
      * 设置数据后会遍历调用此方法对每个数据进行初始化
      *
      * @param item
