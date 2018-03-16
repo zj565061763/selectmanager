@@ -209,22 +209,6 @@ public class FSelectManager<T>
     }
 
     /**
-     * 模拟点击该项
-     *
-     * @param item
-     */
-    public final void performClick(T item)
-    {
-        if (!listContains(mListItem, item))
-        {
-            return;
-        }
-
-        final boolean selected = isSelected(item);
-        setSelectedInternal(item, !selected);
-    }
-
-    /**
      * 设置该位置的选中状态
      *
      * @param index
@@ -239,6 +223,22 @@ public class FSelectManager<T>
 
         final T item = mListItem.get(index);
         setSelectedInternal(item, selected);
+    }
+
+    /**
+     * 模拟点击该项
+     *
+     * @param item
+     */
+    public final void performClick(T item)
+    {
+        if (!listContains(mListItem, item))
+        {
+            return;
+        }
+
+        final boolean selected = isSelected(item);
+        setSelectedInternal(item, !selected);
     }
 
     /**
