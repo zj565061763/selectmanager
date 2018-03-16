@@ -19,20 +19,20 @@ public class FSelectViewManager<T extends View> extends FSelectManager<T>
     {
         super.onInitItem(item);
         item.setOnClickListener(mOnClickListener);
-        onNormal(item);
-    }
-
-    @Override
-    protected void onNormal(T item)
-    {
-        super.onNormal(item);
         item.setSelected(false);
     }
 
     @Override
-    protected void onSelected(T item)
+    protected void onNormal(int index, T item)
     {
-        super.onSelected(item);
+        super.onNormal(index, item);
+        item.setSelected(false);
+    }
+
+    @Override
+    protected void onSelected(int index, T item)
+    {
+        super.onSelected(index, item);
         item.setSelected(true);
     }
 }
