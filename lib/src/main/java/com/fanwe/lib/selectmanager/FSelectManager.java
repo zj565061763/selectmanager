@@ -193,7 +193,7 @@ public class FSelectManager<T>
     }
 
     /**
-     * 模拟点击该项
+     * 模拟点击该位置
      *
      * @param index
      */
@@ -252,6 +252,7 @@ public class FSelectManager<T>
         {
             return;
         }
+
         setSelectedWithoutCheckContains(item, selected);
     }
 
