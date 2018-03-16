@@ -199,10 +199,13 @@ public class FSelectManager<T>
      */
     public final void performClick(int index)
     {
-        if (isIndexLegal(index))
+        if (!isIndexLegal(index))
         {
-            performClick(mListItem.get(index));
+            return;
         }
+
+        final T item = mListItem.get(index);
+        performClick(item);
     }
 
     /**
