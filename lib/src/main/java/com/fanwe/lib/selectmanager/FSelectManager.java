@@ -359,12 +359,11 @@ public class FSelectManager<T>
             return;
         }
 
-        final int index = indexOfItem(item);
         for (Callback<T> callback : mListCallback)
         {
-            callback.onNormal(index, item);
+            callback.onNormal(item);
         }
-        onNormal(index, item);
+        onNormal(item);
     }
 
     private void notifySelected(T item)
@@ -374,20 +373,19 @@ public class FSelectManager<T>
             return;
         }
 
-        final int index = indexOfItem(item);
         for (Callback<T> callback : mListCallback)
         {
-            callback.onSelected(index, item);
+            callback.onSelected(item);
         }
-        onSelected(index, item);
+        onSelected(item);
     }
 
-    protected void onNormal(int index, T item)
+    protected void onNormal(T item)
     {
 
     }
 
-    protected void onSelected(int index, T item)
+    protected void onSelected(T item)
     {
 
     }
@@ -716,17 +714,15 @@ public class FSelectManager<T>
         /**
          * item正常回调
          *
-         * @param index
          * @param item
          */
-        void onNormal(int index, T item);
+        void onNormal(T item);
 
         /**
          * item选中回调
          *
-         * @param index
          * @param item
          */
-        void onSelected(int index, T item);
+        void onSelected(T item);
     }
 }
