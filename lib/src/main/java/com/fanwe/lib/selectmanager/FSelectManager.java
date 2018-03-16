@@ -136,7 +136,7 @@ public class FSelectManager<T>
      */
     public final int getSelectedIndex()
     {
-        return indexOfItem(mCurrentItem);
+        return indexOf(mCurrentItem);
     }
 
     /**
@@ -149,7 +149,7 @@ public class FSelectManager<T>
         final List<Integer> list = new ArrayList<>();
         for (T item : mListSelected)
         {
-            list.add(indexOfItem(item));
+            list.add(indexOf(item));
         }
         return list;
     }
@@ -425,9 +425,9 @@ public class FSelectManager<T>
      * @param item
      * @return
      */
-    public final int indexOfItem(T item)
+    public final int indexOf(T item)
     {
-        return listIndexOfItem(mListItem, item);
+        return listIndexOf(mListItem, item);
     }
 
     //---------- data start ----------
@@ -624,7 +624,7 @@ public class FSelectManager<T>
         return false;
     }
 
-    private static <T> int listIndexOfItem(List<T> list, T item)
+    private static <T> int listIndexOf(List<T> list, T item)
     {
         if (item == null)
         {
