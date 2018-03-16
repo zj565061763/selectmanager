@@ -183,7 +183,7 @@ public class FSelectManager<T>
     {
         for (T item : mListItem)
         {
-            setSelected(item, select);
+            setSelectedInternal(item, select);
         }
     }
 
@@ -212,8 +212,11 @@ public class FSelectManager<T>
      */
     public final void performClick(T item)
     {
-        final boolean selected = isSelected(item);
-        setSelected(item, !selected);
+        if (listContains(mListItem, item))
+        {
+            final boolean selected = isSelected(item);
+            setSelectedInternal(item, !selected);
+        }
     }
 
     /**
@@ -224,10 +227,13 @@ public class FSelectManager<T>
      */
     public final void setSelected(int index, boolean selected)
     {
-        if (isIndexLegal(index))
+        if (!isIndexLegal(index))
         {
-            setSelected(mListItem.get(index), selected);
+            return;
         }
+
+        final T item = mListItem.get(index);
+        setSelectedInternal(item, selected);
     }
 
     /**
@@ -237,6 +243,15 @@ public class FSelectManager<T>
      * @param selected
      */
     public final void setSelected(T item, boolean selected)
+    {
+        if (!listContains(mListItem, item))
+        {
+            return;
+        }
+        setSelectedInternal(item, selected);
+    }
+
+    private void setSelectedInternal(T item, boolean selected)
     {
         if (item == null)
         {
@@ -482,6 +497,11 @@ public class FSelectManager<T>
      */
     public final void removeItem(T item)
     {
+        if (!listContains(mListItem, item))
+        {
+            return;
+        }
+
         if (isSelected(item))
         {
             if (isSingleMode())
@@ -489,7 +509,7 @@ public class FSelectManager<T>
                 clearSelected();
             } else
             {
-                setSelected(item, false);
+                setSelectedInternal(item, false);
                 if (isSelected(item))
                 {
                     // 多选必选模式，并且当前仅有一项item，直接清空选中
@@ -574,7 +594,7 @@ public class FSelectManager<T>
         if (item instanceof Selectable)
         {
             final boolean selected = ((Selectable) item).isSelected();
-            setSelected(item, selected);
+            setSelectedInternal(item, selected);
         }
     }
 
