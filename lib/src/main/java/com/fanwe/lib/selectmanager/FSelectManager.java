@@ -261,10 +261,6 @@ public class FSelectManager<T>
         {
             return;
         }
-        if (!listContains(mListItem, item))
-        {
-            return;
-        }
 
         switch (mMode)
         {
