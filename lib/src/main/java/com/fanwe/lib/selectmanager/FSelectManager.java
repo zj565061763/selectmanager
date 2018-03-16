@@ -183,7 +183,7 @@ public class FSelectManager<T>
     {
         for (T item : mListItem)
         {
-            setSelectedInternal(item, select);
+            setSelectedWithoutCheckContains(item, select);
         }
     }
 
@@ -205,7 +205,7 @@ public class FSelectManager<T>
         }
 
         final T item = mListItem.get(index);
-        setSelectedInternal(item, !isSelected(item));
+        setSelectedWithoutCheckContains(item, !isSelected(item));
     }
 
     /**
@@ -222,7 +222,7 @@ public class FSelectManager<T>
         }
 
         final T item = mListItem.get(index);
-        setSelectedInternal(item, selected);
+        setSelectedWithoutCheckContains(item, selected);
     }
 
     /**
@@ -237,7 +237,7 @@ public class FSelectManager<T>
             return;
         }
 
-        setSelectedInternal(item, !isSelected(item));
+        setSelectedWithoutCheckContains(item, !isSelected(item));
     }
 
     /**
@@ -252,10 +252,10 @@ public class FSelectManager<T>
         {
             return;
         }
-        setSelectedInternal(item, selected);
+        setSelectedWithoutCheckContains(item, selected);
     }
 
-    private void setSelectedInternal(T item, boolean selected)
+    private void setSelectedWithoutCheckContains(T item, boolean selected)
     {
         if (item == null)
         {
@@ -504,7 +504,7 @@ public class FSelectManager<T>
                 clearSelected();
             } else
             {
-                setSelectedInternal(item, false);
+                setSelectedWithoutCheckContains(item, false);
                 if (isSelected(item))
                 {
                     // 多选必选模式，并且当前仅有一项item，直接清空选中
@@ -589,7 +589,7 @@ public class FSelectManager<T>
         if (item instanceof Selectable)
         {
             final boolean selected = ((Selectable) item).isSelected();
-            setSelectedInternal(item, selected);
+            setSelectedWithoutCheckContains(item, selected);
         }
     }
 
