@@ -162,6 +162,24 @@ public class FSelectManager<T>
         }
     }
 
+    private boolean isIndexLegal(int index)
+    {
+        return index >= 0 && index < mListItem.size();
+    }
+
+    /**
+     * 模拟点击该项
+     *
+     * @param index
+     */
+    public final void performClick(int index)
+    {
+        if (isIndexLegal(index))
+        {
+            performClick(mListItem.get(index));
+        }
+    }
+
     /**
      * 模拟点击该项
      *
@@ -175,6 +193,20 @@ public class FSelectManager<T>
 
     /**
      * 设置该位置的选中状态
+     *
+     * @param index
+     * @param selected
+     */
+    public final void setSelected(int index, boolean selected)
+    {
+        if (isIndexLegal(index))
+        {
+            setSelected(mListItem.get(index), selected);
+        }
+    }
+
+    /**
+     * 设置该项的选中状态
      *
      * @param item
      * @param selected
