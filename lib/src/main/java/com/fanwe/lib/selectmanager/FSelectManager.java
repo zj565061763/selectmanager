@@ -205,7 +205,7 @@ public class FSelectManager<T>
         }
 
         final T item = mListItem.get(index);
-        performClick(item);
+        setSelectedInternal(item, !isSelected(item));
     }
 
     /**
@@ -237,8 +237,7 @@ public class FSelectManager<T>
             return;
         }
 
-        final boolean selected = isSelected(item);
-        setSelectedInternal(item, !selected);
+        setSelectedInternal(item, !isSelected(item));
     }
 
     /**
