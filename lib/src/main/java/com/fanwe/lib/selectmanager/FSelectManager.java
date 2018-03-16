@@ -353,6 +353,11 @@ public class FSelectManager<T>
 
     private void notifyNormal(T item)
     {
+        if (item == null)
+        {
+            return;
+        }
+
         final int index = indexOfItem(item);
         for (Callback<T> callback : mListCallback)
         {
@@ -363,6 +368,11 @@ public class FSelectManager<T>
 
     private void notifySelected(T item)
     {
+        if (item == null)
+        {
+            return;
+        }
+
         final int index = indexOfItem(item);
         for (Callback<T> callback : mListCallback)
         {
