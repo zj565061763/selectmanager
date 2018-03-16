@@ -497,11 +497,6 @@ public class FSelectManager<T>
      */
     public final void removeItem(T item)
     {
-        if (!listContains(mListItem, item))
-        {
-            return;
-        }
-
         if (isSelected(item))
         {
             if (isSingleMode())
