@@ -130,25 +130,23 @@ public class FSelectManager<T>
     }
 
     /**
-     * 获得选中项
+     * 获得选中项(单选模式)
+     *
+     * @return
+     */
+    public final T getSelectedItem()
+    {
+        return mCurrentItem;
+    }
+
+    /**
+     * 获得选中项(多选模式)
      *
      * @return
      */
     public final List<T> getSelectedItems()
     {
-        final List<T> list = new ArrayList<>();
-
-        if (isSingleMode())
-        {
-            if (mCurrentItem != null)
-            {
-                list.add(mCurrentItem);
-            }
-        } else
-        {
-            list.addAll(mListSelected);
-        }
-        return list;
+        return new ArrayList<>(mListSelected);
     }
 
     /**
