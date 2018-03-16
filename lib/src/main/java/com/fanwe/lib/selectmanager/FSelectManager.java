@@ -328,23 +328,27 @@ public class FSelectManager<T>
 
     private void selectItemSingle(T item)
     {
-        if (mCurrentItem != item)
+        if (mCurrentItem == item)
         {
-            final T old = mCurrentItem;
-            mCurrentItem = item;
-
-            notifyNormal(old);
-            notifySelected(item);
+            return;
         }
+
+        final T old = mCurrentItem;
+        mCurrentItem = item;
+
+        notifyNormal(old);
+        notifySelected(item);
     }
 
     private void selectItemMulti(T item)
     {
-        if (!listContains(mListSelected, item))
+        if (listContains(mListSelected, item))
         {
-            mListSelected.add(item);
-            notifySelected(item);
+            return;
         }
+
+        mListSelected.add(item);
+        notifySelected(item);
     }
 
     private void notifyNormal(T item)
