@@ -215,11 +215,13 @@ public class FSelectManager<T>
      */
     public final void performClick(T item)
     {
-        if (listContains(mListItem, item))
+        if (!listContains(mListItem, item))
         {
-            final boolean selected = isSelected(item);
-            setSelectedInternal(item, !selected);
+            return;
         }
+
+        final boolean selected = isSelected(item);
+        setSelectedInternal(item, !selected);
     }
 
     /**
