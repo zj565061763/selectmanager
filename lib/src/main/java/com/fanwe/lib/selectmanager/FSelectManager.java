@@ -130,7 +130,32 @@ public class FSelectManager<T>
     }
 
     /**
-     * 获得选中项(单选模式)
+     * 返回选中的位置(单选模式)
+     *
+     * @return
+     */
+    public final int getSelectedIndex()
+    {
+        return indexOfItem(mCurrentItem);
+    }
+
+    /**
+     * 返回选中的位置(多选模式)
+     *
+     * @return
+     */
+    public final List<Integer> getSelectedIndexs()
+    {
+        final List<Integer> list = new ArrayList<>();
+        for (T item : mListSelected)
+        {
+            list.add(indexOfItem(item));
+        }
+        return list;
+    }
+
+    /**
+     * 返回选中项(单选模式)
      *
      * @return
      */
@@ -140,7 +165,7 @@ public class FSelectManager<T>
     }
 
     /**
-     * 获得选中项(多选模式)
+     * 返回选中项(多选模式)
      *
      * @return
      */
