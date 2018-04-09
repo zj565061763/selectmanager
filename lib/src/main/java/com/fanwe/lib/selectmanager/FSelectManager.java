@@ -262,19 +262,19 @@ public class FSelectManager<T>
      * 设置该项的选中状态
      *
      * @param item
-     * @param selected
+     * @param select
      */
-    public final void setSelected(T item, boolean selected)
+    public final void setSelected(T item, boolean select)
     {
         if (!listContains(mListItem, item))
         {
             return;
         }
 
-        setSelectedWithoutCheckContains(item, selected);
+        setSelectedWithoutCheckContains(item, select);
     }
 
-    private void setSelectedWithoutCheckContains(T item, boolean selected)
+    private void setSelectedWithoutCheckContains(T item, boolean select)
     {
         if (item == null)
         {
@@ -288,13 +288,13 @@ public class FSelectManager<T>
         switch (mMode)
         {
             case SINGLE_MUST_ONE_SELECTED:
-                if (selected)
+                if (select)
                 {
                     selectItemSingle(item);
                 }
                 break;
             case SINGLE:
-                if (selected)
+                if (select)
                 {
                     selectItemSingle(item);
                 } else
@@ -311,7 +311,7 @@ public class FSelectManager<T>
                 }
                 break;
             case MULTI_MUST_ONE_SELECTED:
-                if (selected)
+                if (select)
                 {
                     selectItemMulti(item);
                 } else
@@ -327,7 +327,7 @@ public class FSelectManager<T>
                 }
                 break;
             case MULTI:
-                if (selected)
+                if (select)
                 {
                     selectItemMulti(item);
                 } else
@@ -356,7 +356,7 @@ public class FSelectManager<T>
         mCurrentItem = item;
 
         notifyNormal(old);
-        notifySelected(item);
+        notifySelect(item);
     }
 
     private void selectItemMulti(T item)
@@ -367,7 +367,7 @@ public class FSelectManager<T>
         }
 
         mListSelected.add(item);
-        notifySelected(item);
+        notifySelect(item);
     }
 
     private void notifyNormal(T item)
@@ -384,7 +384,7 @@ public class FSelectManager<T>
         onNormal(item);
     }
 
-    private void notifySelected(T item)
+    private void notifySelect(T item)
     {
         if (item == null)
         {
