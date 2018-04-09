@@ -161,7 +161,13 @@ public class FSelectManager<T>
      */
     public final T getSelectedItem()
     {
-        return mCurrentItem;
+        if (isSingleMode())
+        {
+            return mCurrentItem;
+        } else
+        {
+            throw new RuntimeException("multi mode not support this method");
+        }
     }
 
     /**
@@ -171,7 +177,13 @@ public class FSelectManager<T>
      */
     public final List<T> getSelectedItems()
     {
-        return new ArrayList<>(mListSelected);
+        if (isSingleMode())
+        {
+            throw new RuntimeException("single mode not support this method");
+        } else
+        {
+            return new ArrayList<>(mListSelected);
+        }
     }
 
     /**
