@@ -230,9 +230,9 @@ public class FSelectManager<T>
      * 设置该位置的选中状态
      *
      * @param index
-     * @param select
+     * @param selected
      */
-    public final void setSelected(int index, boolean select)
+    public final void setSelected(int index, boolean selected)
     {
         if (!isIndexLegal(index))
         {
@@ -240,7 +240,7 @@ public class FSelectManager<T>
         }
 
         final T item = mListItem.get(index);
-        setSelectedWithoutCheckContains(item, select);
+        setSelectedWithoutCheckContains(item, selected);
     }
 
     /**
@@ -262,19 +262,19 @@ public class FSelectManager<T>
      * 设置该项的选中状态
      *
      * @param item
-     * @param select
+     * @param selected
      */
-    public final void setSelected(T item, boolean select)
+    public final void setSelected(T item, boolean selected)
     {
         if (!listContains(mListItem, item))
         {
             return;
         }
 
-        setSelectedWithoutCheckContains(item, select);
+        setSelectedWithoutCheckContains(item, selected);
     }
 
-    private void setSelectedWithoutCheckContains(T item, boolean select)
+    private void setSelectedWithoutCheckContains(T item, boolean selected)
     {
         if (item == null)
         {
@@ -288,13 +288,13 @@ public class FSelectManager<T>
         switch (mMode)
         {
             case SINGLE_MUST_ONE_SELECTED:
-                if (select)
+                if (selected)
                 {
                     selectItemSingle(item);
                 }
                 break;
             case SINGLE:
-                if (select)
+                if (selected)
                 {
                     selectItemSingle(item);
                 } else
@@ -311,7 +311,7 @@ public class FSelectManager<T>
                 }
                 break;
             case MULTI_MUST_ONE_SELECTED:
-                if (select)
+                if (selected)
                 {
                     selectItemMulti(item);
                 } else
@@ -327,7 +327,7 @@ public class FSelectManager<T>
                 }
                 break;
             case MULTI:
-                if (select)
+                if (selected)
                 {
                     selectItemMulti(item);
                 } else
@@ -356,7 +356,7 @@ public class FSelectManager<T>
         mCurrentItem = item;
 
         notifyNormal(old);
-        notifySelect(item);
+        notifySelected(item);
     }
 
     private void selectItemMulti(T item)
@@ -367,7 +367,7 @@ public class FSelectManager<T>
         }
 
         mListSelected.add(item);
-        notifySelect(item);
+        notifySelected(item);
     }
 
     private void notifyNormal(T item)
@@ -384,7 +384,7 @@ public class FSelectManager<T>
         onNormal(item);
     }
 
-    private void notifySelect(T item)
+    private void notifySelected(T item)
     {
         if (item == null)
         {
@@ -393,9 +393,9 @@ public class FSelectManager<T>
 
         for (Callback<T> callback : mListCallback)
         {
-            callback.onSelect(item);
+            callback.onSelected(item);
         }
-        onSelect(item);
+        onSelected(item);
     }
 
     protected void onNormal(T item)
@@ -403,7 +403,7 @@ public class FSelectManager<T>
 
     }
 
-    protected void onSelect(T item)
+    protected void onSelected(T item)
     {
 
     }
@@ -501,7 +501,7 @@ public class FSelectManager<T>
         mListItem.addAll(items);
         for (T item : items)
         {
-            synchronizeSelectState(item);
+            synchronizeSelected(item);
             onInitItem(item);
         }
     }
@@ -519,7 +519,7 @@ public class FSelectManager<T>
         }
 
         mListItem.add(item);
-        synchronizeSelectState(item);
+        synchronizeSelected(item);
         onInitItem(item);
     }
 
@@ -562,7 +562,7 @@ public class FSelectManager<T>
         }
 
         mListItem.add(index, item);
-        synchronizeSelectState(item);
+        synchronizeSelected(item);
         onInitItem(item);
     }
 
@@ -582,7 +582,7 @@ public class FSelectManager<T>
         mListItem.addAll(index, items);
         for (T item : items)
         {
-            synchronizeSelectState(item);
+            synchronizeSelected(item);
             onInitItem(item);
         }
     }
@@ -601,7 +601,7 @@ public class FSelectManager<T>
         }
 
         mListItem.set(index, item);
-        synchronizeSelectState(item);
+        synchronizeSelected(item);
         onInitItem(item);
     }
 
@@ -617,7 +617,7 @@ public class FSelectManager<T>
 
     }
 
-    private void synchronizeSelectState(T item)
+    private void synchronizeSelected(T item)
     {
         if (item instanceof Selectable)
         {
@@ -715,6 +715,6 @@ public class FSelectManager<T>
          *
          * @param item
          */
-        void onSelect(T item);
+        void onSelected(T item);
     }
 }

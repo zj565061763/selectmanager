@@ -30,9 +30,9 @@ public class FSelectViewManager<T extends View> extends FSelectManager<T>
     }
 
     @Override
-    protected void onSelect(T item)
+    protected void onSelected(T item)
     {
-        super.onSelect(item);
+        super.onSelected(item);
         item.setSelected(true);
     }
 }
