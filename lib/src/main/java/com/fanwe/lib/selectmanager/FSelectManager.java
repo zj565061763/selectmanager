@@ -501,7 +501,7 @@ public class FSelectManager<T>
         mListItem.addAll(items);
         for (T item : items)
         {
-            synchronizeSelected(item);
+            synchronizeSelectState(item);
             onInitItem(item);
         }
     }
@@ -519,7 +519,7 @@ public class FSelectManager<T>
         }
 
         mListItem.add(item);
-        synchronizeSelected(item);
+        synchronizeSelectState(item);
         onInitItem(item);
     }
 
@@ -562,7 +562,7 @@ public class FSelectManager<T>
         }
 
         mListItem.add(index, item);
-        synchronizeSelected(item);
+        synchronizeSelectState(item);
         onInitItem(item);
     }
 
@@ -582,7 +582,7 @@ public class FSelectManager<T>
         mListItem.addAll(index, items);
         for (T item : items)
         {
-            synchronizeSelected(item);
+            synchronizeSelectState(item);
             onInitItem(item);
         }
     }
@@ -601,7 +601,7 @@ public class FSelectManager<T>
         }
 
         mListItem.set(index, item);
-        synchronizeSelected(item);
+        synchronizeSelectState(item);
         onInitItem(item);
     }
 
@@ -617,7 +617,7 @@ public class FSelectManager<T>
 
     }
 
-    private void synchronizeSelected(T item)
+    private void synchronizeSelectState(T item)
     {
         if (item instanceof Selectable)
         {
