@@ -393,9 +393,9 @@ public class FSelectManager<T>
 
         for (Callback<T> callback : mListCallback)
         {
-            callback.onSelected(item);
+            callback.onSelect(item);
         }
-        onSelected(item);
+        onSelect(item);
     }
 
     protected void onNormal(T item)
@@ -403,7 +403,7 @@ public class FSelectManager<T>
 
     }
 
-    protected void onSelected(T item)
+    protected void onSelect(T item)
     {
 
     }
@@ -715,6 +715,6 @@ public class FSelectManager<T>
          *
          * @param item
          */
-        void onSelected(T item);
+        void onSelect(T item);
     }
 }
