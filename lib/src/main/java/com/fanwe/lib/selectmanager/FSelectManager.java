@@ -136,7 +136,8 @@ public class FSelectManager<T>
      */
     public final int getSelectedIndex()
     {
-        return indexOf(mCurrentItem);
+        final T item = getSelectedItem();
+        return indexOf(item);
     }
 
     /**
@@ -147,7 +148,8 @@ public class FSelectManager<T>
     public final List<Integer> getSelectedIndexs()
     {
         final List<Integer> list = new ArrayList<>();
-        for (T item : mListSelected)
+        final List<T> listItem = getSelectedItems();
+        for (T item : listItem)
         {
             list.add(indexOf(item));
         }
