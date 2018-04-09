@@ -614,14 +614,7 @@ public class FSelectManager<T>
         {
             return false;
         }
-        for (T value : list)
-        {
-            if (value == item)
-            {
-                return true;
-            }
-        }
-        return false;
+        return list.contains(item);
     }
 
     private static <T> int listIndexOf(List<T> list, T item)
@@ -630,17 +623,7 @@ public class FSelectManager<T>
         {
             return -1;
         }
-
-        int i = 0;
-        for (T value : list)
-        {
-            if (value == item)
-            {
-                return i;
-            }
-            i++;
-        }
-        return -1;
+        return list.indexOf(item);
     }
 
     private static <T> boolean listRemove(List<T> list, T item)
@@ -649,18 +632,7 @@ public class FSelectManager<T>
         {
             return false;
         }
-
-        final Iterator<T> it = list.iterator();
-        while (it.hasNext())
-        {
-            final T value = it.next();
-            if (value == item)
-            {
-                it.remove();
-                return true;
-            }
-        }
-        return false;
+        return list.remove(item);
     }
 
     //---------- utils end ----------
