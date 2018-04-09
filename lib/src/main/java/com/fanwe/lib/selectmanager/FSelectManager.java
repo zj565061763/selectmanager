@@ -190,11 +190,9 @@ public class FSelectManager<T>
     }
 
     /**
-     * 全选或者全部取消(多选模式)
-     *
-     * @param select true-全选，false-全部取消
+     * 全选(多选模式)
      */
-    public final void selectAll(boolean select)
+    public final void selectAll()
     {
         if (isSingleMode())
         {
@@ -203,7 +201,7 @@ public class FSelectManager<T>
 
         for (T item : mListItem)
         {
-            setSelectedWithoutCheckContains(item, select);
+            setSelectedWithoutCheckContains(item, true);
         }
     }
 
