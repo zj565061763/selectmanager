@@ -230,9 +230,9 @@ public class FSelectManager<T>
      * 设置该位置的选中状态
      *
      * @param index
-     * @param selected
+     * @param select
      */
-    public final void setSelected(int index, boolean selected)
+    public final void setSelected(int index, boolean select)
     {
         if (!isIndexLegal(index))
         {
@@ -240,7 +240,7 @@ public class FSelectManager<T>
         }
 
         final T item = mListItem.get(index);
-        setSelectedWithoutCheckContains(item, selected);
+        setSelectedWithoutCheckContains(item, select);
     }
 
     /**
