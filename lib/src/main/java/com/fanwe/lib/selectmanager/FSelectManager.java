@@ -175,7 +175,7 @@ public class FSelectManager<T>
     }
 
     /**
-     * 全选或者全部取消
+     * 全选或者全部取消(多选模式)
      *
      * @param select true-全选，false-全部取消
      */
