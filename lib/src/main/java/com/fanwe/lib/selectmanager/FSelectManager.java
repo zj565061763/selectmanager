@@ -148,6 +148,7 @@ public class FSelectManager<T>
     public final List<Integer> getSelectedIndexs()
     {
         final List<Integer> list = new ArrayList<>();
+
         final List<T> listItem = getSelectedItems();
         for (T item : listItem)
         {
@@ -195,6 +196,11 @@ public class FSelectManager<T>
      */
     public final void selectAll(boolean select)
     {
+        if (isSingleMode())
+        {
+            throw new RuntimeException("single mode not support this method");
+        }
+
         for (T item : mListItem)
         {
             setSelectedWithoutCheckContains(item, select);
