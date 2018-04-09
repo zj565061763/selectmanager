@@ -513,12 +513,14 @@ public class FSelectManager<T>
      */
     public final void appendItem(T item)
     {
-        if (item != null)
+        if (item == null)
         {
-            mListItem.add(item);
-            synchronizeSelected(item);
-            onInitItem(item);
+            return;
         }
+
+        mListItem.add(item);
+        synchronizeSelected(item);
+        onInitItem(item);
     }
 
     /**
