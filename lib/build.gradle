@@ -4,13 +4,13 @@ apply plugin: 'com.github.dcendents.android-maven'
 group = 'com.github.zj565061763'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
 
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 20180414
-        versionName "1.0.7"
+        versionCode 20180510
+        versionName "1.0.8"
     }
 
     buildTypes {
