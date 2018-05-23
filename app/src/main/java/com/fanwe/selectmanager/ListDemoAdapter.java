@@ -52,9 +52,12 @@ public class ListDemoAdapter extends BaseAdapter
                      * 如果FSelectManager的数据发生变化，会回调此方法，这边可以同步选中状态
                      * 比如：要把新增item的状态，同步到选择管理器中
                      *
-                     * 为了提高同步效率，建议实体实现FSelectManager.Selectable接口
-                     * 实现此接口后，当FSelectManager的数据发生变化后，会自动同步新数据的选中状态
+                     * 如果实体实现了FSelectManager.Selectable接口
+                     * 1. FSelectManager的数据发生变化后，会自动同步新数据的选中状态，不用重写此方法手动同步
+                     * 2. 内部同步选中状态的时候不会再判断是否包含该item，同步效率比较高
                      */
+
+                    // 手动同步选中状态
                     mSelectManager.setSelected(item, item.selected);
                 }
             };

@@ -437,10 +437,8 @@ public class FSelectManager<T>
         mCurrentItem = null;
         mListSelected.clear();
         mListItem.clear();
-        if (items != null)
-        {
-            mListItem.addAll(items);
-        }
+
+        if (items != null) mListItem.addAll(items);
 
         for (T item : mListItem)
         {
@@ -461,7 +459,6 @@ public class FSelectManager<T>
         mListItem.addAll(items);
         for (T item : items)
         {
-            synchronizeSelected(item);
             onInitItem(item);
         }
     }
@@ -477,7 +474,6 @@ public class FSelectManager<T>
             return;
 
         mListItem.add(item);
-        synchronizeSelected(item);
         onInitItem(item);
     }
 
@@ -518,7 +514,6 @@ public class FSelectManager<T>
             return;
 
         mListItem.add(index, item);
-        synchronizeSelected(item);
         onInitItem(item);
     }
 
@@ -536,7 +531,6 @@ public class FSelectManager<T>
         mListItem.addAll(index, items);
         for (T item : items)
         {
-            synchronizeSelected(item);
             onInitItem(item);
         }
     }
@@ -553,7 +547,6 @@ public class FSelectManager<T>
             return;
 
         mListItem.set(index, item);
-        synchronizeSelected(item);
         onInitItem(item);
     }
 
@@ -566,11 +559,6 @@ public class FSelectManager<T>
      */
     protected void onInitItem(T item)
     {
-
-    }
-
-    private void synchronizeSelected(T item)
-    {
         if (item instanceof Selectable)
         {
             final boolean selected = ((Selectable) item).isSelected();
@@ -582,28 +570,16 @@ public class FSelectManager<T>
 
     private static <T> boolean listContains(List<T> list, T item)
     {
-        if (item == null)
-        {
-            return false;
-        }
         return list.contains(item);
     }
 
     private static <T> int listIndexOf(List<T> list, T item)
     {
-        if (item == null)
-        {
-            return -1;
-        }
         return list.indexOf(item);
     }
 
     private static <T> boolean listRemove(List<T> list, T item)
     {
-        if (item == null)
-        {
-            return false;
-        }
         return list.remove(item);
     }
 
