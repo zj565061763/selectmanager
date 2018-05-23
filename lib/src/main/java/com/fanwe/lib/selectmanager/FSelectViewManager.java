@@ -5,7 +5,7 @@ import android.view.View.OnClickListener;
 
 public class FSelectViewManager<T extends View> extends FSelectManager<T>
 {
-    private OnClickListener mOnClickListener = new OnClickListener()
+    private final OnClickListener mOnClickListener = new OnClickListener()
     {
         @Override
         public void onClick(View v)
