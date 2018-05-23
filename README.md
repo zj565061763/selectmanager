@@ -9,7 +9,7 @@
 # Gradle
 `implementation 'com.fanwe.android:selectmanager:1.0.9'`
 
-# 效果
+# 简单效果
 ![](http://thumbsnap.com/i/sodYq9ca.gif?0522)
 ![](http://thumbsnap.com/i/vKHV9N5l.gif?0522)
 ![](http://thumbsnap.com/i/SQrJHAoa.gif?0522)
@@ -94,5 +94,178 @@ public void onClick(View v)
      * 选中某一项
      */
  // mSelectManager.setSelected(btn_0, true);
+}
+```
+
+# 列表中效果
+![](http://thumbsnap.com/i/JFJpyuU1.gif?0522)
+
+1. 创建实体
+```java
+public class DataModel
+{
+    public String name;
+    public boolean selected;
+
+    public static List<DataModel> get(int count)
+    {
+        final List<DataModel> list = new ArrayList<>();
+        for (int i = 0; i < count; i++)
+        {
+            DataModel model = new DataModel();
+            model.name = String.valueOf(i);
+            list.add(model);
+        }
+        return list;
+    }
+}
+```
+
+2. 创建Adapter
+adapter的写法仅仅用来演示，性能的问题请开发者自己进行优化
+```java
+public class ListDemoAdapter extends BaseAdapter
+{
+    private List<DataModel> mListModel;
+    private FSelectManager<DataModel> mSelectManager;
+
+    public ListDemoAdapter(List<DataModel> listModel)
+    {
+        mListModel = listModel;
+
+        getSelectManager().setMode(FSelectManager.Mode.MULTI); // 设置多选模式
+        getSelectManager().setItems(listModel); // 设置数据
+    }
+
+    /**
+     * 返回选择管理器
+     *
+     * @return
+     */
+    public FSelectManager<DataModel> getSelectManager()
+    {
+        if (mSelectManager == null)
+        {
+            mSelectManager = new FSelectManager<>();
+            mSelectManager.addCallback(new FSelectManager.Callback<DataModel>()
+            {
+                @Override
+                public void onNormal(DataModel item)
+                {
+                    item.selected = false; // item状态设置为false
+                    notifyDataSetChanged();
+                }
+
+                @Override
+                public void onSelected(DataModel item)
+                {
+                    item.selected = true; // item状态设置为true
+                    notifyDataSetChanged();
+                }
+            });
+        }
+        return mSelectManager;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
+        final Button button = new Button(parent.getContext());
+        final DataModel model = mListModel.get(position);
+
+        button.setText(model.name);
+        if (model.selected)
+            button.setTextColor(Color.RED);
+        else
+            button.setTextColor(Color.BLACK);
+
+        button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                getSelectManager().performClick(model); // 模拟点击该项
+            }
+        });
+
+        return button;
+    }
+
+    @Override
+    public int getCount()
+    {
+        return mListModel.size();
+    }
+
+    @Override
+    public Object getItem(int position)
+    {
+        return mListModel.get(position);
+    }
+
+    @Override
+    public long getItemId(int position)
+    {
+        return position;
+    }
+}
+```
+
+3. 外部监听数据
+```java
+public class ListDemoActivity extends AppCompatActivity
+{
+    private ListView mListView;
+    private TextView mTvSelectedInfo;
+    private ListDemoAdapter mAdapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_list_demo);
+        mListView = findViewById(R.id.lv_content);
+        mTvSelectedInfo = findViewById(R.id.tv_selected_info);
+
+        mAdapter = new ListDemoAdapter(DataModel.get(50));
+        mAdapter.getSelectManager().addCallback(new FSelectManager.Callback<DataModel>()
+        {
+            @Override
+            public void onNormal(DataModel item)
+            {
+                updateSelectedInfo();
+            }
+
+            @Override
+            public void onSelected(DataModel item)
+            {
+                updateSelectedInfo();
+            }
+        });
+        mListView.setAdapter(mAdapter);
+    }
+
+    /**
+     * 更新选中的信息
+     */
+    private void updateSelectedInfo()
+    {
+        String info = "";
+        if (mAdapter.getSelectManager().isSingleMode())
+        {
+            final DataModel model = mAdapter.getSelectManager().getSelectedItem(); // 获得选中的项
+            if (model != null)
+                info = model.name;
+        } else
+        {
+            final List<DataModel> models = mAdapter.getSelectManager().getSelectedItems(); // 获得选中的项
+            for (DataModel item : models)
+            {
+                info += item.name;
+                info += ",";
+            }
+        }
+        mTvSelectedInfo.setText(info);
+    }
 }
 ```

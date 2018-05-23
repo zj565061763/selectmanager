@@ -12,4 +12,12 @@
         android:text="Simple demo"
         android:textAllCaps="false" />
 
+    <Button
+        android:id="@+id/btn_list_demo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="List demo"
+        android:textAllCaps="false" />
+
 </LinearLayout>
