@@ -122,6 +122,7 @@ public class DataModel
 ```
 
 2. 创建Adapter
+<br>
 adapter的写法仅仅用来演示，性能的问题请开发者自己进行优化
 ```java
 public class ListDemoAdapter extends BaseAdapter
