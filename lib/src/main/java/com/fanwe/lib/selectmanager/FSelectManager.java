@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 选择管理器
@@ -19,7 +20,7 @@ public class FSelectManager<T>
     private final List<T> mListSelected = new ArrayList<>();
 
     private boolean mIsEnable = true;
-    private final List<Callback<T>> mListCallback = new ArrayList<>();
+    private final List<Callback<T>> mListCallback = new CopyOnWriteArrayList<>();
 
     /**
      * 添加选择状态回调
@@ -29,9 +30,8 @@ public class FSelectManager<T>
     public final void addCallback(final Callback<T> callback)
     {
         if (callback == null || mListCallback.contains(callback))
-        {
             return;
-        }
+
         mListCallback.add(callback);
     }
 
@@ -73,9 +73,8 @@ public class FSelectManager<T>
     public final void setMode(final Mode mode)
     {
         if (mode == null)
-        {
             return;
-        }
+
         clearSelected();
         mMode = mode;
     }
@@ -116,17 +115,12 @@ public class FSelectManager<T>
     public final boolean isSelected(final T item)
     {
         if (item == null)
-        {
             return false;
-        }
 
         if (isSingleMode())
-        {
             return item == mCurrentItem;
-        } else
-        {
+        else
             return listContains(mListSelected, item);
-        }
     }
 
     /**
@@ -165,12 +159,10 @@ public class FSelectManager<T>
     public final T getSelectedItem()
     {
         if (isSingleMode())
-        {
             return mCurrentItem;
-        } else
-        {
-            throw new RuntimeException("multi mode not support this method");
-        }
+        else
+            throw new UnsupportedOperationException("this method is not supported for multi mode");
+
     }
 
     /**
@@ -181,12 +173,9 @@ public class FSelectManager<T>
     public final List<T> getSelectedItems()
     {
         if (isSingleMode())
-        {
-            throw new RuntimeException("single mode not support this method");
-        } else
-        {
+            throw new UnsupportedOperationException("this method is not supported for single mode");
+        else
             return new ArrayList<>(mListSelected);
-        }
     }
 
     /**
@@ -195,9 +184,7 @@ public class FSelectManager<T>
     public final void selectAll()
     {
         if (isSingleMode())
-        {
-            throw new RuntimeException("single mode not support this method");
-        }
+            throw new UnsupportedOperationException("this method is not supported for single mode");
 
         for (T item : mListItem)
         {
@@ -218,9 +205,7 @@ public class FSelectManager<T>
     public final void performClick(int index)
     {
         if (!isIndexLegal(index))
-        {
             return;
-        }
 
         final T item = mListItem.get(index);
         setSelectedWithoutCheckContains(item, !isSelected(item));
@@ -235,9 +220,7 @@ public class FSelectManager<T>
     public final void setSelected(int index, boolean selected)
     {
         if (!isIndexLegal(index))
-        {
             return;
-        }
 
         final T item = mListItem.get(index);
         setSelectedWithoutCheckContains(item, selected);
@@ -251,9 +234,7 @@ public class FSelectManager<T>
     public final void performClick(T item)
     {
         if (!listContains(mListItem, item))
-        {
             return;
-        }
 
         setSelectedWithoutCheckContains(item, !isSelected(item));
     }
@@ -267,23 +248,15 @@ public class FSelectManager<T>
     public final void setSelected(T item, boolean selected)
     {
         if (!listContains(mListItem, item))
-        {
             return;
-        }
 
         setSelectedWithoutCheckContains(item, selected);
     }
 
     private void setSelectedWithoutCheckContains(T item, boolean selected)
     {
-        if (item == null)
-        {
+        if (item == null || !mIsEnable)
             return;
-        }
-        if (!mIsEnable)
-        {
-            return;
-        }
 
         switch (mMode)
         {
@@ -305,8 +278,6 @@ public class FSelectManager<T>
                         mCurrentItem = null;
 
                         notifyNormal(old);
-                    } else
-                    {
                     }
                 }
                 break;
@@ -339,7 +310,6 @@ public class FSelectManager<T>
                     }
                 }
                 break;
-
             default:
                 break;
         }
@@ -348,9 +318,7 @@ public class FSelectManager<T>
     private void selectItemSingle(T item)
     {
         if (mCurrentItem == item)
-        {
             return;
-        }
 
         final T old = mCurrentItem;
         mCurrentItem = item;
@@ -362,9 +330,7 @@ public class FSelectManager<T>
     private void selectItemMulti(T item)
     {
         if (listContains(mListSelected, item))
-        {
             return;
-        }
 
         mListSelected.add(item);
         notifySelected(item);
@@ -373,9 +339,7 @@ public class FSelectManager<T>
     private void notifyNormal(T item)
     {
         if (item == null)
-        {
             return;
-        }
 
         for (Callback<T> callback : mListCallback)
         {
@@ -387,9 +351,7 @@ public class FSelectManager<T>
     private void notifySelected(T item)
     {
         if (item == null)
-        {
             return;
-        }
 
         for (Callback<T> callback : mListCallback)
         {
@@ -494,9 +456,7 @@ public class FSelectManager<T>
     public final void appendItems(List<T> items)
     {
         if (items == null)
-        {
             return;
-        }
 
         mListItem.addAll(items);
         for (T item : items)
@@ -514,9 +474,7 @@ public class FSelectManager<T>
     public final void appendItem(T item)
     {
         if (item == null)
-        {
             return;
-        }
 
         mListItem.add(item);
         synchronizeSelected(item);
@@ -557,9 +515,7 @@ public class FSelectManager<T>
     public final void insertItem(int index, T item)
     {
         if (item == null)
-        {
             return;
-        }
 
         mListItem.add(index, item);
         synchronizeSelected(item);
@@ -575,9 +531,7 @@ public class FSelectManager<T>
     public final void insertItem(int index, List<T> items)
     {
         if (items == null || items.isEmpty())
-        {
             return;
-        }
 
         mListItem.addAll(index, items);
         for (T item : items)
@@ -596,9 +550,7 @@ public class FSelectManager<T>
     public final void updateItem(int index, T item)
     {
         if (item == null)
-        {
             return;
-        }
 
         mListItem.set(index, item);
         synchronizeSelected(item);
