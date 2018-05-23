@@ -27,13 +27,7 @@ public class ListDemoActivity extends AppCompatActivity
         mAdapter.getSelectManager().addCallback(new FSelectManager.Callback<DataModel>()
         {
             @Override
-            public void onNormal(DataModel item)
-            {
-                updateSelectedInfo();
-            }
-
-            @Override
-            public void onSelected(DataModel item)
+            public void onSelectedChanged(boolean selected, DataModel item)
             {
                 updateSelectedInfo();
             }

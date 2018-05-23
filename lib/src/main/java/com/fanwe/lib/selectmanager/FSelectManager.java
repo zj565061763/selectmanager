@@ -11,7 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @param <T>
  */
-public class FSelectManager<T>
+public class FSelectManager<T> implements SelectManager<T>
 {
     private Mode mMode = Mode.SINGLE_MUST_ONE_SELECTED;
     private final List<T> mListItem = new ArrayList<>();
@@ -19,7 +19,6 @@ public class FSelectManager<T>
     private T mCurrentItem;
     private final List<T> mListSelected = new ArrayList<>();
 
-    private boolean mIsEnable = true;
     private final List<Callback<T>> mListCallback = new CopyOnWriteArrayList<>();
 
     /**
@@ -27,6 +26,7 @@ public class FSelectManager<T>
      *
      * @param callback
      */
+    @Override
     public final void addCallback(final Callback<T> callback)
     {
         if (callback == null || mListCallback.contains(callback))
@@ -40,29 +40,10 @@ public class FSelectManager<T>
      *
      * @param callback
      */
+    @Override
     public final void removeCallback(final Callback<T> callback)
     {
         mListCallback.remove(callback);
-    }
-
-    /**
-     * 设置是否开启管理功能
-     *
-     * @param enable
-     */
-    public final void setEnable(final boolean enable)
-    {
-        mIsEnable = enable;
-    }
-
-    /**
-     * 是否开启了管理功能，默认true，开启
-     *
-     * @return
-     */
-    public final boolean isEnable()
-    {
-        return mIsEnable;
     }
 
     /**
@@ -70,6 +51,7 @@ public class FSelectManager<T>
      *
      * @param mode
      */
+    @Override
     public final void setMode(final Mode mode)
     {
         if (mode == null)
@@ -84,6 +66,7 @@ public class FSelectManager<T>
      *
      * @return
      */
+    @Override
     public final Mode getMode()
     {
         return mMode;
@@ -94,6 +77,7 @@ public class FSelectManager<T>
      *
      * @return
      */
+    @Override
     public final boolean isSingleMode()
     {
         switch (mMode)
@@ -112,6 +96,7 @@ public class FSelectManager<T>
      * @param item
      * @return
      */
+    @Override
     public final boolean isSelected(final T item)
     {
         if (item == null)
@@ -128,6 +113,7 @@ public class FSelectManager<T>
      *
      * @return
      */
+    @Override
     public final int getSelectedIndex()
     {
         final T item = getSelectedItem();
@@ -139,6 +125,7 @@ public class FSelectManager<T>
      *
      * @return
      */
+    @Override
     public final List<Integer> getSelectedIndexs()
     {
         final List<Integer> list = new ArrayList<>();
@@ -156,6 +143,7 @@ public class FSelectManager<T>
      *
      * @return
      */
+    @Override
     public final T getSelectedItem()
     {
         if (isSingleMode())
@@ -170,6 +158,7 @@ public class FSelectManager<T>
      *
      * @return
      */
+    @Override
     public final List<T> getSelectedItems()
     {
         if (isSingleMode())
@@ -181,6 +170,7 @@ public class FSelectManager<T>
     /**
      * 全选(多选模式)
      */
+    @Override
     public final void selectAll()
     {
         if (isSingleMode())
@@ -202,6 +192,7 @@ public class FSelectManager<T>
      *
      * @param index
      */
+    @Override
     public final void performClick(int index)
     {
         if (!isIndexLegal(index))
@@ -217,6 +208,7 @@ public class FSelectManager<T>
      * @param index
      * @param selected
      */
+    @Override
     public final void setSelected(int index, boolean selected)
     {
         if (!isIndexLegal(index))
@@ -231,6 +223,7 @@ public class FSelectManager<T>
      *
      * @param item
      */
+    @Override
     public final void performClick(T item)
     {
         if (!listContains(mListItem, item))
@@ -245,6 +238,7 @@ public class FSelectManager<T>
      * @param item
      * @param selected
      */
+    @Override
     public final void setSelected(T item, boolean selected)
     {
         if (!listContains(mListItem, item))
@@ -255,7 +249,7 @@ public class FSelectManager<T>
 
     private void setSelectedWithoutCheckContains(T item, boolean selected)
     {
-        if (item == null || !mIsEnable)
+        if (item == null)
             return;
 
         switch (mMode)
@@ -343,9 +337,9 @@ public class FSelectManager<T>
 
         for (Callback<T> callback : mListCallback)
         {
-            callback.onNormal(item);
+            callback.onSelectedChanged(false, item);
         }
-        onNormal(item);
+        onSelectedChanged(false, item);
     }
 
     private void notifySelected(T item)
@@ -355,24 +349,19 @@ public class FSelectManager<T>
 
         for (Callback<T> callback : mListCallback)
         {
-            callback.onSelected(item);
+            callback.onSelectedChanged(true, item);
         }
-        onSelected(item);
+        onSelectedChanged(true, item);
     }
 
-    protected void onNormal(T item)
+    protected void onSelectedChanged(boolean selected, T item)
     {
-
-    }
-
-    protected void onSelected(T item)
-    {
-
     }
 
     /**
      * 清除选中
      */
+    @Override
     public final void clearSelected()
     {
         if (isSingleMode())
@@ -405,6 +394,7 @@ public class FSelectManager<T>
      * @param item
      * @return
      */
+    @Override
     public final int indexOf(T item)
     {
         return listIndexOf(mListItem, item);
@@ -417,6 +407,7 @@ public class FSelectManager<T>
      *
      * @param items
      */
+    @Override
     public final void setItems(T... items)
     {
         List<T> listItem = null;
@@ -432,6 +423,7 @@ public class FSelectManager<T>
      *
      * @param items
      */
+    @Override
     public final void setItems(List<T> items)
     {
         mCurrentItem = null;
@@ -451,6 +443,7 @@ public class FSelectManager<T>
      *
      * @param items
      */
+    @Override
     public final void appendItems(List<T> items)
     {
         if (items == null)
@@ -468,6 +461,7 @@ public class FSelectManager<T>
      *
      * @param item
      */
+    @Override
     public final void appendItem(T item)
     {
         if (item == null)
@@ -482,6 +476,7 @@ public class FSelectManager<T>
      *
      * @param item
      */
+    @Override
     public final void removeItem(T item)
     {
         if (isSelected(item))
@@ -508,6 +503,7 @@ public class FSelectManager<T>
      * @param index
      * @param item
      */
+    @Override
     public final void insertItem(int index, T item)
     {
         if (item == null)
@@ -523,6 +519,7 @@ public class FSelectManager<T>
      * @param index
      * @param items
      */
+    @Override
     public final void insertItem(int index, List<T> items)
     {
         if (items == null || items.isEmpty())
@@ -541,6 +538,7 @@ public class FSelectManager<T>
      * @param index
      * @param item
      */
+    @Override
     public final void updateItem(int index, T item)
     {
         if (item == null)
@@ -584,65 +582,4 @@ public class FSelectManager<T>
     }
 
     //---------- utils end ----------
-
-    public enum Mode
-    {
-        /**
-         * 单选，必须选中一项
-         */
-        SINGLE_MUST_ONE_SELECTED,
-        /**
-         * 单选，可以一项都没选中
-         */
-        SINGLE,
-        /**
-         * 多选，必须选中一项
-         */
-        MULTI_MUST_ONE_SELECTED,
-        /**
-         * 多选，可以一项都没选中
-         */
-        MULTI;
-    }
-
-    public interface Selectable
-    {
-        boolean isSelected();
-
-        void setSelected(boolean selected);
-    }
-
-    public static class SelectableModel implements Selectable
-    {
-        private boolean selected;
-
-        @Override
-        public boolean isSelected()
-        {
-            return selected;
-        }
-
-        @Override
-        public void setSelected(boolean selected)
-        {
-            this.selected = selected;
-        }
-    }
-
-    public interface Callback<T>
-    {
-        /**
-         * item正常回调
-         *
-         * @param item
-         */
-        void onNormal(T item);
-
-        /**
-         * item选中回调
-         *
-         * @param item
-         */
-        void onSelected(T item);
-    }
 }

@@ -23,16 +23,9 @@ public class FSelectViewManager<T extends View> extends FSelectManager<T>
     }
 
     @Override
-    protected void onNormal(T item)
+    protected void onSelectedChanged(boolean selected, T item)
     {
-        super.onNormal(item);
-        item.setSelected(false);
-    }
-
-    @Override
-    protected void onSelected(T item)
-    {
-        super.onSelected(item);
-        item.setSelected(true);
+        super.onSelectedChanged(selected, item);
+        item.setSelected(selected);
     }
 }

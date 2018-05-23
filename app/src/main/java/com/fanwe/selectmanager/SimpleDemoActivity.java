@@ -44,18 +44,15 @@ public class SimpleDemoActivity extends AppCompatActivity implements View.OnClic
         mSelectManager.addCallback(new FSelectManager.Callback<Button>()
         {
             @Override
-            public void onNormal(Button item)
+            public void onSelectedChanged(boolean selected, Button item)
             {
-                // 状态正常回调
-                item.setTextColor(Color.BLACK);
-                updateSelectedInfo();
-            }
-
-            @Override
-            public void onSelected(Button item)
-            {
-                // 状态选中回调
-                item.setTextColor(Color.RED);
+                if (selected)
+                {
+                    item.setTextColor(Color.RED);
+                } else
+                {
+                    item.setTextColor(Color.BLACK);
+                }
                 updateSelectedInfo();
             }
         });

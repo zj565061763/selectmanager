@@ -64,16 +64,9 @@ public class ListDemoAdapter extends BaseAdapter
             mSelectManager.addCallback(new FSelectManager.Callback<DataModel>()
             {
                 @Override
-                public void onNormal(DataModel item)
+                public void onSelectedChanged(boolean selected, DataModel item)
                 {
-                    item.selected = false; // item状态设置为false
-                    notifyDataSetChanged();
-                }
-
-                @Override
-                public void onSelected(DataModel item)
-                {
-                    item.selected = true; // item状态设置为true
+                    item.selected = selected;
                     notifyDataSetChanged();
                 }
             });
