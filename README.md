@@ -16,7 +16,7 @@
 ![](http://thumbsnap.com/i/Z9rxk88m.gif?0522)
 <br>
 
-1. 创建选择管理器
+1. 创建FSelectManager
 ```java
 private final FSelectManager<Button> mSelectManager = new FSelectManager<>();
 ```
@@ -138,8 +138,18 @@ public class ListDemoAdapter extends BaseAdapter
         getSelectManager().setItems(listModel); // 设置数据
     }
 
+    public void addModel(DataModel model)
+    {
+        mListModel.add(model);
+        /**
+         * 注意：如果你的数据集发生了变化的话要调用FSelectManager的方法同步数据，更多同步数据的方法见源码
+         */
+        getSelectManager().appendItem(model);
+        notifyDataSetChanged();
+    }
+
     /**
-     * 返回选择管理器
+     * 返回FSelectManager
      *
      * @return
      */
@@ -147,7 +157,22 @@ public class ListDemoAdapter extends BaseAdapter
     {
         if (mSelectManager == null)
         {
-            mSelectManager = new FSelectManager<>();
+            mSelectManager = new FSelectManager<DataModel>()
+            {
+                @Override
+                protected void onInitItem(DataModel item)
+                {
+                    super.onInitItem(item);
+                    /**
+                     * 如果FSelectManager的数据发生变化，会回调此方法，这边可以同步选中状态
+                     * 比如：要把新增item的状态，同步到选择管理器中
+                     *
+                     * 为了提高同步效率，建议实体实现FSelectManager.Selectable接口
+                     * 实现此接口后，当FSelectManager的数据发生变化后，会自动同步新数据的选中状态
+                     */
+                    mSelectManager.setSelected(item, item.selected);
+                }
+            };
             mSelectManager.addCallback(new FSelectManager.Callback<DataModel>()
             {
                 @Override
