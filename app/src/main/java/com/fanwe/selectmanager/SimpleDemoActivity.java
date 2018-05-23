@@ -90,7 +90,7 @@ public class SimpleDemoActivity extends AppCompatActivity implements View.OnClic
                         mSelectManager.setMode(FSelectManager.Mode.SINGLE);
                         break;
                     case R.id.rb_single_must:
-                        // 设置单选必选模式
+                        // 设置单选必选模式，这种模式是默认的模式
                         mSelectManager.setMode(FSelectManager.Mode.SINGLE_MUST_ONE_SELECTED);
                         break;
                     case R.id.rb_multi:
