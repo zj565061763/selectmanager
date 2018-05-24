@@ -7,7 +7,7 @@
 * 多选必选
 
 # Gradle
-`implementation 'com.fanwe.android:selectmanager:1.0.9'`
+`implementation 'com.fanwe.android:selectmanager:1.0.10'`
 
 # 简单效果
 ![](http://thumbsnap.com/i/sodYq9ca.gif?0522)
