@@ -285,11 +285,12 @@ public class FSelectManager<T> implements SelectManager<T>
         if (item == null)
             return;
 
+        onSelectedChanged(false, item);
+
         for (Callback<T> callback : mListCallback)
         {
             callback.onSelectedChanged(false, item);
         }
-        onSelectedChanged(false, item);
     }
 
     private void notifySelected(T item)
@@ -297,11 +298,12 @@ public class FSelectManager<T> implements SelectManager<T>
         if (item == null)
             return;
 
+        onSelectedChanged(true, item);
+
         for (Callback<T> callback : mListCallback)
         {
             callback.onSelectedChanged(true, item);
         }
-        onSelectedChanged(true, item);
     }
 
     /**
@@ -312,6 +314,10 @@ public class FSelectManager<T> implements SelectManager<T>
      */
     protected void onSelectedChanged(boolean selected, T item)
     {
+        if (item instanceof Selectable)
+        {
+            ((Selectable) item).setSelected(selected);
+        }
     }
 
     //---------- data start ----------
