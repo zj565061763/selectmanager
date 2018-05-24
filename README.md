@@ -126,7 +126,7 @@ private void updateSelectedInfo()
 1. 数据的同步，即SelectManager中的item列表要和用户adapter中的item列表数据一致
 2. 选中状态的同步，比如adapter新增了一项数据是选中的，那么也要把这一项的选中状态同步给SelectManager
 
-针对第一个问题，SelectManager中提供了一系列操作数据的方法，可以看底部的SelectManager接口<br>
+针对第一个问题，SelectManager中提供了一系列操作数据的方法，可以看下面的demo<br>
 针对第二个问题，只要让你的item实体实现SelectManager.Selectable接口既可<br>
 <br>
 下面是demo：<br>
@@ -153,7 +153,7 @@ public class DataModel implements SelectManager.Selectable
 ```
 
 2. 创建Adapter <br>
-为了方便演示adapter数据变更的问题，此处用了作者的另一个adapter库来演示，可以获得adapter的数据持有者DataHolder来监听数据的变化
+为了方便演示adapter数据变更的问题，此处用了作者的另一个[adapter](https://github.com/zj565061763/adapter)库来演示，可以获得adapter的数据持有者DataHolder来监听数据的变化
 
 ```java
 public class ListDemoAdapter extends FSimpleAdapter<DataModel>
