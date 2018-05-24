@@ -20,6 +20,7 @@ public class FSelectManager<T> implements SelectManager<T>
     private final List<T> mListSelected = new ArrayList<>();
 
     private final List<Callback<T>> mListCallback = new CopyOnWriteArrayList<>();
+    private OnItemInitCallback<T> mOnItemInitCallback;
 
     @Override
     public final void addCallback(final Callback<T> callback)
@@ -34,6 +35,12 @@ public class FSelectManager<T> implements SelectManager<T>
     public final void removeCallback(final Callback<T> callback)
     {
         mListCallback.remove(callback);
+    }
+
+    @Override
+    public final void setOnItemInitCallback(OnItemInitCallback<T> callback)
+    {
+        mOnItemInitCallback = callback;
     }
 
     @Override
@@ -309,11 +316,6 @@ public class FSelectManager<T> implements SelectManager<T>
 
     //---------- data start ----------
 
-    /**
-     * 设置数据
-     *
-     * @param items
-     */
     @Override
     public final void setItems(T... items)
     {
@@ -325,11 +327,6 @@ public class FSelectManager<T> implements SelectManager<T>
         setItems(listItem);
     }
 
-    /**
-     * 设置数据
-     *
-     * @param items
-     */
     @Override
     public final void setItems(List<T> items)
     {
@@ -337,19 +334,15 @@ public class FSelectManager<T> implements SelectManager<T>
         mListSelected.clear();
         mListItem.clear();
 
-        if (items != null) mListItem.addAll(items);
+        if (items != null)
+            mListItem.addAll(items);
 
         for (T item : mListItem)
         {
-            onInitItem(item);
+            initItem(item);
         }
     }
 
-    /**
-     * 添加数据
-     *
-     * @param items
-     */
     @Override
     public final void appendItems(List<T> items)
     {
@@ -359,15 +352,10 @@ public class FSelectManager<T> implements SelectManager<T>
         mListItem.addAll(items);
         for (T item : items)
         {
-            onInitItem(item);
+            initItem(item);
         }
     }
 
-    /**
-     * 添加数据
-     *
-     * @param item
-     */
     @Override
     public final void appendItem(T item)
     {
@@ -375,14 +363,9 @@ public class FSelectManager<T> implements SelectManager<T>
             return;
 
         mListItem.add(item);
-        onInitItem(item);
+        initItem(item);
     }
 
-    /**
-     * 移除数据
-     *
-     * @param item
-     */
     @Override
     public final void removeItem(T item)
     {
@@ -404,12 +387,6 @@ public class FSelectManager<T> implements SelectManager<T>
         listRemove(mListItem, item);
     }
 
-    /**
-     * 插入数据
-     *
-     * @param index
-     * @param item
-     */
     @Override
     public final void insertItem(int index, T item)
     {
@@ -417,15 +394,9 @@ public class FSelectManager<T> implements SelectManager<T>
             return;
 
         mListItem.add(index, item);
-        onInitItem(item);
+        initItem(item);
     }
 
-    /**
-     * 插入数据
-     *
-     * @param index
-     * @param items
-     */
     @Override
     public final void insertItem(int index, List<T> items)
     {
@@ -435,16 +406,10 @@ public class FSelectManager<T> implements SelectManager<T>
         mListItem.addAll(index, items);
         for (T item : items)
         {
-            onInitItem(item);
+            initItem(item);
         }
     }
 
-    /**
-     * 更新数据
-     *
-     * @param index
-     * @param item
-     */
     @Override
     public final void updateItem(int index, T item)
     {
@@ -452,23 +417,28 @@ public class FSelectManager<T> implements SelectManager<T>
             return;
 
         mListItem.set(index, item);
-        onInitItem(item);
+        initItem(item);
     }
 
     //---------- data end ----------
 
-    /**
-     * 设置数据后会遍历调用此方法对每个数据进行初始化
-     *
-     * @param item
-     */
-    protected void onInitItem(T item)
+    private void initItem(T item)
     {
         if (item instanceof Selectable)
         {
             final boolean selected = ((Selectable) item).isSelected();
             setSelectedWithoutCheckContains(item, selected);
         }
+
+        onInitItem(item);
+
+        if (mOnItemInitCallback != null)
+            mOnItemInitCallback.onInitItem(item);
+    }
+
+    protected void onInitItem(T item)
+    {
+
     }
 
     //---------- utils start ----------

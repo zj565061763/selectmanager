@@ -19,6 +19,13 @@ public interface SelectManager<T>
     void removeCallback(Callback<T> callback);
 
     /**
+     * 设置item初始化回调对象
+     *
+     * @param callback
+     */
+    void setOnItemInitCallback(OnItemInitCallback<T> callback);
+
+    /**
      * 设置选择模式
      *
      * @param mode
@@ -118,20 +125,63 @@ public interface SelectManager<T>
 
     //---------- data start ----------
 
+    /**
+     * 设置数据
+     *
+     * @param items
+     */
     void setItems(T... items);
 
+    /**
+     * 设置数据
+     *
+     * @param items
+     */
     void setItems(List<T> items);
 
+    /**
+     * 添加数据
+     *
+     * @param items
+     */
     void appendItems(List<T> items);
 
+    /**
+     * 添加数据
+     *
+     * @param item
+     */
     void appendItem(T item);
 
+    /**
+     * 移除数据
+     *
+     * @param item
+     */
     void removeItem(T item);
 
+    /**
+     * 插入数据
+     *
+     * @param index
+     * @param item
+     */
     void insertItem(int index, T item);
 
+    /**
+     * 插入数据
+     *
+     * @param index
+     * @param items
+     */
     void insertItem(int index, List<T> items);
 
+    /**
+     * 更新数据
+     *
+     * @param index
+     * @param item
+     */
     void updateItem(int index, T item);
 
     //---------- data end ----------
@@ -175,6 +225,16 @@ public interface SelectManager<T>
          * @param item
          */
         void onSelectedChanged(boolean selected, T item);
+    }
+
+    /**
+     * 数据变更的时候会触发此回调来初始化item
+     *
+     * @param <T>
+     */
+    interface OnItemInitCallback<T>
+    {
+        void onInitItem(T item);
     }
 
     interface Selectable
