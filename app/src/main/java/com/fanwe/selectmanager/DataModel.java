@@ -1,22 +1,27 @@
 package com.fanwe.selectmanager;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.fanwe.lib.selectmanager.SelectManager;
 
-public class DataModel
+public class DataModel implements SelectManager.Selectable
 {
     public String name;
     public boolean selected;
 
-    public static List<DataModel> get(int count)
+    @Override
+    public boolean isSelected()
     {
-        final List<DataModel> list = new ArrayList<>();
-        for (int i = 0; i < count; i++)
-        {
-            DataModel model = new DataModel();
-            model.name = String.valueOf(i);
-            list.add(model);
-        }
-        return list;
+        return selected;
+    }
+
+    @Override
+    public void setSelected(boolean selected)
+    {
+        this.selected = selected;
+    }
+
+    @Override
+    public String toString()
+    {
+        return name;
     }
 }

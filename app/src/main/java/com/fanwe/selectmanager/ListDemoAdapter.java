@@ -1,37 +1,71 @@
 package com.fanwe.selectmanager;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 
+import com.fanwe.lib.adapter.FSimpleAdapter;
+import com.fanwe.lib.adapter.data.DataHolder;
 import com.fanwe.lib.selectmanager.FSelectManager;
 import com.fanwe.lib.selectmanager.SelectManager;
 
 import java.util.List;
 
-public class ListDemoAdapter extends BaseAdapter
+public class ListDemoAdapter extends FSimpleAdapter<DataModel>
 {
-    private List<DataModel> mListModel;
     private SelectManager<DataModel> mSelectManager;
 
-    public ListDemoAdapter(List<DataModel> listModel)
+    public ListDemoAdapter(Activity activity)
     {
-        mListModel = listModel;
-
-        getSelectManager().setMode(SelectManager.Mode.MULTI); // 设置多选模式
-        getSelectManager().setItems(listModel); // 设置数据
-    }
-
-    public void addModel(DataModel model)
-    {
-        mListModel.add(model);
+        super(activity);
         /**
-         * 注意：如果你的数据集发生了变化的话要调用SelectManager的方法同步数据，更多同步数据的方法见源码
+         * 设置多选模式
          */
-        getSelectManager().addItem(model);
-        notifyDataSetChanged();
+        getSelectManager().setMode(SelectManager.Mode.MULTI);
+
+        /**
+         * adapter 数据变化监听
+         */
+        getDataHolder().addDataChangeCallback(new DataHolder.DataChangeCallback<DataModel>()
+        {
+            @Override
+            public void onDataChanged(List<DataModel> list)
+            {
+                /**
+                 * 同步数据到SelectManager
+                 */
+                getSelectManager().setItems(list);
+            }
+
+            @Override
+            public void onDataChanged(int index, DataModel data)
+            {
+                /**
+                 * 同步数据到SelectManager
+                 */
+                getSelectManager().updateItem(index, data);
+            }
+
+            @Override
+            public void onDataAdded(int index, List<DataModel> list)
+            {
+                /**
+                 * 同步数据到SelectManager
+                 */
+                getSelectManager().addItems(index, list);
+            }
+
+            @Override
+            public void onDataRemoved(int index, DataModel data)
+            {
+                /**
+                 * 同步数据到SelectManager
+                 */
+                getSelectManager().removeItem(data);
+            }
+        });
     }
 
     /**
@@ -49,29 +83,15 @@ public class ListDemoAdapter extends BaseAdapter
                 @Override
                 public void onSelectedChanged(boolean selected, DataModel item)
                 {
-                    item.selected = selected;
-                    notifyDataSetChanged();
-                }
-            });
-
-            /**
-             * 设置item初始化回调对象
-             * 如果SelectManager的数据发生变化，会回调此对象，这边可以同步选中状态
-             * 比如：要把新增item的状态，同步到选择管理器中
-             *
-             * 如果item实现了SelectManager.Selectable接口，那么：
-             * 1. SelectManager数据发生变化后，会自动同步新数据的选中状态
-             * 2. 同步效率比较高，同步选中状态的时候不会判断是否包含该item
-             */
-            mSelectManager.setOnItemInitCallback(new SelectManager.OnItemInitCallback<DataModel>()
-            {
-                @Override
-                public void onInitItem(DataModel item)
-                {
                     /**
-                     * demo这边为了演示，手动同步选中状态，建议item实现SelectManager.Selectable接口
+                     * 由于item实现了SelectManager.Selectable接口，所以这一句不用执行
                      */
-                    mSelectManager.setSelected(item, item.selected);
+                    // item.setSelected(selected);
+
+                    /**
+                     * 选中状态变化通知刷新adapter
+                     */
+                    notifyDataSetChanged();
                 }
             });
         }
@@ -79,12 +99,11 @@ public class ListDemoAdapter extends BaseAdapter
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
+    public void onBindData(int position, View convertView, ViewGroup parent, final DataModel model)
     {
-        final Button button = new Button(parent.getContext());
-        final DataModel model = mListModel.get(position);
-
+        Button button = get(R.id.btn, convertView);
         button.setText(model.name);
+
         if (model.selected)
             button.setTextColor(Color.RED);
         else
@@ -95,28 +114,20 @@ public class ListDemoAdapter extends BaseAdapter
             @Override
             public void onClick(View v)
             {
-                getSelectManager().performClick(model); // 模拟点击该项
+                /**
+                 * 模拟点击该项，触发选中状态变更
+                 */
+                getSelectManager().performClick(model);
             }
         });
-
-        return button;
     }
 
     @Override
-    public int getCount()
+    public int getLayoutId(int position, View convertView, ViewGroup parent)
     {
-        return mListModel.size();
-    }
-
-    @Override
-    public Object getItem(int position)
-    {
-        return mListModel.get(position);
-    }
-
-    @Override
-    public long getItemId(int position)
-    {
-        return position;
+        /**
+         * 返回item的布局
+         */
+        return R.layout.item_listview;
     }
 }

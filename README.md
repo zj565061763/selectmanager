@@ -92,55 +92,123 @@ public void onClick(View v)
 }
 ```
 
+6. 获得选中的item
+```java
+/**
+ * 更新选中的信息
+ */
+private void updateSelectedInfo()
+{
+    String info = "";
+    if (mSelectManager.getMode().isSingleType())
+    {
+        final Button button = mSelectManager.getSelectedItem(); // 获得选中的项
+        if (button != null)
+            info = button.getText().toString();
+    } else
+    {
+        final List<Button> buttons = mSelectManager.getSelectedItems(); // 获得选中的项
+        for (Button item : buttons)
+        {
+            info += item.getText().toString();
+            info += "\r\n";
+        }
+    }
+    tv_selected_info.setText(info);
+}
+```
+
 # 列表中效果
 ![](http://thumbsnap.com/i/JFJpyuU1.gif?0522)
+<br>
+
+如果在列表中用SelectManager的话，要注意列表的数据改变(增加，删除，修改)的时候，要和SelectManager进行同步：
+1. 数据的同步，即SelectManager中的item列表要和用户adapter中的item列表数据一致
+2. 选中状态的同步，比如adapter新增了一项数据是选中的，那么也要把这一项的选中状态同步给SelectManager
+
+针对第一个问题，SelectManager中提供了一系列操作数据的方法，可以看底部的SelectManager接口<br>
+针对第二个问题，只要让你的item实体实现SelectManager.Selectable接口既可<br>
+<br>
+下面是demo：<br>
 
 1. 创建实体
 ```java
-public class DataModel
+public class DataModel implements SelectManager.Selectable
 {
     public String name;
     public boolean selected;
 
-    public static List<DataModel> get(int count)
+    @Override
+    public boolean isSelected()
     {
-        final List<DataModel> list = new ArrayList<>();
-        for (int i = 0; i < count; i++)
-        {
-            DataModel model = new DataModel();
-            model.name = String.valueOf(i);
-            list.add(model);
-        }
-        return list;
+        return selected;
+    }
+
+    @Override
+    public void setSelected(boolean selected)
+    {
+        this.selected = selected;
     }
 }
 ```
 
 2. 创建Adapter <br>
-adapter的写法仅仅用来演示，性能的问题请开发者自己进行优化
+为了方便演示adapter数据变更的问题，此处用了作者的另一个adapter库来演示，可以获得adapter的数据持有者DataHolder来监听数据的变化
 
 ```java
-public class ListDemoAdapter extends BaseAdapter
+public class ListDemoAdapter extends FSimpleAdapter<DataModel>
 {
-    private List<DataModel> mListModel;
     private SelectManager<DataModel> mSelectManager;
 
-    public ListDemoAdapter(List<DataModel> listModel)
+    public ListDemoAdapter(Activity activity)
     {
-        mListModel = listModel;
-
-        getSelectManager().setMode(SelectManager.Mode.MULTI); // 设置多选模式
-        getSelectManager().setItems(listModel); // 设置数据
-    }
-
-    public void addModel(DataModel model)
-    {
-        mListModel.add(model);
+        super(activity);
         /**
-         * 注意：如果你的数据集发生了变化的话要调用SelectManager的方法同步数据，更多同步数据的方法见源码
+         * 设置多选模式
          */
-        getSelectManager().appendItem(model);
-        notifyDataSetChanged();
+        getSelectManager().setMode(SelectManager.Mode.MULTI);
+
+        /**
+         * adapter 数据变化监听
+         */
+        getDataHolder().addDataChangeCallback(new DataHolder.DataChangeCallback<DataModel>()
+        {
+            @Override
+            public void onDataChanged(List<DataModel> list)
+            {
+                /**
+                 * 同步数据到SelectManager
+                 */
+                getSelectManager().setItems(list);
+            }
+
+            @Override
+            public void onDataChanged(int index, DataModel data)
+            {
+                /**
+                 * 同步数据到SelectManager
+                 */
+                getSelectManager().updateItem(index, data);
+            }
+
+            @Override
+            public void onDataAdded(int index, List<DataModel> list)
+            {
+                /**
+                 * 同步数据到SelectManager
+                 */
+                getSelectManager().addItems(index, list);
+            }
+
+            @Override
+            public void onDataRemoved(int index, DataModel data)
+            {
+                /**
+                 * 同步数据到SelectManager
+                 */
+                getSelectManager().removeItem(data);
+            }
+        });
     }
 
     /**
@@ -158,29 +226,15 @@ public class ListDemoAdapter extends BaseAdapter
                 @Override
                 public void onSelectedChanged(boolean selected, DataModel item)
                 {
-                    item.selected = selected;
-                    notifyDataSetChanged();
-                }
-            });
-
-            /**
-             * 设置item初始化回调对象
-             * 如果SelectManager的数据发生变化，会回调此对象，这边可以同步选中状态
-             * 比如：要把新增item的状态，同步到选择管理器中
-             *
-             * 如果item实现了SelectManager.Selectable接口，那么：
-             * 1. SelectManager数据发生变化后，会自动同步新数据的选中状态
-             * 2. 同步效率比较高，同步选中状态的时候不会判断是否包含该item
-             */
-            mSelectManager.setOnItemInitCallback(new SelectManager.OnItemInitCallback<DataModel>()
-            {
-                @Override
-                public void onInitItem(DataModel item)
-                {
                     /**
-                     * demo这边为了演示，手动同步选中状态，建议item实现SelectManager.Selectable接口
+                     * 由于item实现了SelectManager.Selectable接口，所以这一句不用执行
                      */
-                    mSelectManager.setSelected(item, item.selected);
+                    // item.setSelected(selected);
+
+                    /**
+                     * 选中状态变化通知刷新adapter
+                     */
+                    notifyDataSetChanged();
                 }
             });
         }
@@ -188,12 +242,11 @@ public class ListDemoAdapter extends BaseAdapter
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
+    public void onBindData(int position, View convertView, ViewGroup parent, final DataModel model)
     {
-        final Button button = new Button(parent.getContext());
-        final DataModel model = mListModel.get(position);
-
+        Button button = get(R.id.btn, convertView);
         button.setText(model.name);
+
         if (model.selected)
             button.setTextColor(Color.RED);
         else
@@ -204,40 +257,33 @@ public class ListDemoAdapter extends BaseAdapter
             @Override
             public void onClick(View v)
             {
-                getSelectManager().performClick(model); // 模拟点击该项
+                /**
+                 * 模拟点击该项，触发选中状态变更
+                 */
+                getSelectManager().performClick(model);
             }
         });
-
-        return button;
     }
 
     @Override
-    public int getCount()
+    public int getLayoutId(int position, View convertView, ViewGroup parent)
     {
-        return mListModel.size();
-    }
-
-    @Override
-    public Object getItem(int position)
-    {
-        return mListModel.get(position);
-    }
-
-    @Override
-    public long getItemId(int position)
-    {
-        return position;
+        /**
+         * 返回item的布局
+         */
+        return R.layout.item_listview;
     }
 }
 ```
 
-3. 外部监听数据
+3. 得到选中的数据
 ```java
 public class ListDemoActivity extends AppCompatActivity
 {
     private ListView mListView;
-    private TextView mTvSelectedInfo;
     private ListDemoAdapter mAdapter;
+
+    private TextView tv_selected_info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -245,41 +291,42 @@ public class ListDemoActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_demo);
         mListView = findViewById(R.id.lv_content);
-        mTvSelectedInfo = findViewById(R.id.tv_selected_info);
+        tv_selected_info = findViewById(R.id.tv_selected_info);
 
-        mAdapter = new ListDemoAdapter(DataModel.get(50));
+        mAdapter = new ListDemoAdapter(this);
         mAdapter.getSelectManager().addCallback(new SelectManager.Callback<DataModel>()
         {
             @Override
             public void onSelectedChanged(boolean selected, DataModel item)
             {
-                updateSelectedInfo();
+                if (mAdapter.getSelectManager().getMode().isSingleType())
+                {
+                    /**
+                     * 得到当前选中的item数据
+                     */
+                    DataModel selectedItem = mAdapter.getSelectManager().getSelectedItem();
+
+                    if (selectedItem != null)
+                        tv_selected_info.setText(selectedItem.toString());
+                } else
+                {
+                    /**
+                     * 得到当前选中的item数据
+                     */
+                    List<DataModel> listSelected = mAdapter.getSelectManager().getSelectedItems();
+
+                    tv_selected_info.setText(TextUtils.join(",", listSelected));
+                }
             }
         });
         mListView.setAdapter(mAdapter);
-    }
 
-    /**
-     * 更新选中的信息
-     */
-    private void updateSelectedInfo()
-    {
-        String info = "";
-        if (mAdapter.getSelectManager().getMode().isSingleType())
+        for (int i = 0; i < 50; i++)
         {
-            final DataModel model = mAdapter.getSelectManager().getSelectedItem(); // 获得选中的项
-            if (model != null)
-                info = model.name;
-        } else
-        {
-            final List<DataModel> models = mAdapter.getSelectManager().getSelectedItems(); // 获得选中的项
-            for (DataModel item : models)
-            {
-                info += item.name;
-                info += ",";
-            }
+            DataModel model = new DataModel();
+            model.name = String.valueOf(i);
+            mAdapter.getDataHolder().addData(model); // 向adapter添加数据
         }
-        mTvSelectedInfo.setText(info);
     }
 }
 ```

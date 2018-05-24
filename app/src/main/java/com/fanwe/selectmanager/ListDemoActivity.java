@@ -2,6 +2,7 @@ package com.fanwe.selectmanager;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -12,8 +13,9 @@ import java.util.List;
 public class ListDemoActivity extends AppCompatActivity
 {
     private ListView mListView;
-    private TextView mTvSelectedInfo;
     private ListDemoAdapter mAdapter;
+
+    private TextView tv_selected_info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -21,40 +23,41 @@ public class ListDemoActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_demo);
         mListView = findViewById(R.id.lv_content);
-        mTvSelectedInfo = findViewById(R.id.tv_selected_info);
+        tv_selected_info = findViewById(R.id.tv_selected_info);
 
-        mAdapter = new ListDemoAdapter(DataModel.get(50));
+        mAdapter = new ListDemoAdapter(this);
         mAdapter.getSelectManager().addCallback(new SelectManager.Callback<DataModel>()
         {
             @Override
             public void onSelectedChanged(boolean selected, DataModel item)
             {
-                updateSelectedInfo();
+                if (mAdapter.getSelectManager().getMode().isSingleType())
+                {
+                    /**
+                     * 得到当前选中的item数据
+                     */
+                    DataModel selectedItem = mAdapter.getSelectManager().getSelectedItem();
+
+                    if (selectedItem != null)
+                        tv_selected_info.setText(selectedItem.toString());
+                } else
+                {
+                    /**
+                     * 得到当前选中的item数据
+                     */
+                    List<DataModel> listSelected = mAdapter.getSelectManager().getSelectedItems();
+
+                    tv_selected_info.setText(TextUtils.join(",", listSelected));
+                }
             }
         });
         mListView.setAdapter(mAdapter);
-    }
 
-    /**
-     * 更新选中的信息
-     */
-    private void updateSelectedInfo()
-    {
-        String info = "";
-        if (mAdapter.getSelectManager().getMode().isSingleType())
+        for (int i = 0; i < 50; i++)
         {
-            final DataModel model = mAdapter.getSelectManager().getSelectedItem(); // 获得选中的项
-            if (model != null)
-                info = model.name;
-        } else
-        {
-            final List<DataModel> models = mAdapter.getSelectManager().getSelectedItems(); // 获得选中的项
-            for (DataModel item : models)
-            {
-                info += item.name;
-                info += ",";
-            }
+            DataModel model = new DataModel();
+            model.name = String.valueOf(i);
+            mAdapter.getDataHolder().addData(model); // 向adapter添加数据
         }
-        mTvSelectedInfo.setText(info);
     }
 }
