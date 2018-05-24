@@ -127,7 +127,25 @@ private void updateSelectedInfo()
 2. 选中状态的同步，比如adapter新增了一项数据是选中的，那么也要把这一项的选中状态同步给SelectManager
 
 针对第一个问题，SelectManager中提供了一系列操作数据的方法，可以看下面的demo<br>
-针对第二个问题，只要让你的item实体实现SelectManager.Selectable接口既可<br>
+针对第二个问题，有以下两种实现方案：
+1. 让item实体实现SelectManager.Selectable接口既可，这里会有一个冲突，就是单选模式情况下，旧数据已经有选中的item，这时候
+新数据中也有选中的item，这种情况下，同步后，选中的就是新的item<br>
+2. 如果item实体实现不想SelectManager.Selectable接口，那么可以给SelectManager设置一个SelectManager.OnItemInitCallback对象，
+SelectManager会在数据变更的时候通知这个回调对象，可以在这个回调里面同步选中状态：
+```java
+mSelectManager.setOnItemInitCallback(new SelectManager.OnItemInitCallback<DataModel>()
+{
+    @Override
+    public void onInitItem(DataModel item)
+    {
+        /**
+         * 手动同步item的选中状态到SelectManager中
+         */
+        mSelectManager.setSelected(item, item.isSelected());
+    }
+});
+```
+
 <br>
 下面是demo：<br>
 
