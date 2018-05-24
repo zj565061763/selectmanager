@@ -30,7 +30,7 @@ public class ListDemoAdapter extends BaseAdapter
         /**
          * 注意：如果你的数据集发生了变化的话要调用SelectManager的方法同步数据，更多同步数据的方法见源码
          */
-        getSelectManager().appendItem(model);
+        getSelectManager().addItem(model);
         notifyDataSetChanged();
     }
 

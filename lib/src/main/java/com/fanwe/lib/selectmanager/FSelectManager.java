@@ -350,7 +350,17 @@ public class FSelectManager<T> implements SelectManager<T>
     }
 
     @Override
-    public final void appendItems(List<T> items)
+    public final void addItem(T item)
+    {
+        if (item == null)
+            return;
+
+        mListItem.add(item);
+        initItem(item);
+    }
+
+    @Override
+    public final void addItems(List<T> items)
     {
         if (items == null)
             return;
@@ -363,13 +373,26 @@ public class FSelectManager<T> implements SelectManager<T>
     }
 
     @Override
-    public final void appendItem(T item)
+    public final void addItem(int index, T item)
     {
         if (item == null)
             return;
 
-        mListItem.add(item);
+        mListItem.add(index, item);
         initItem(item);
+    }
+
+    @Override
+    public final void addItems(int index, List<T> items)
+    {
+        if (items == null || items.isEmpty())
+            return;
+
+        mListItem.addAll(index, items);
+        for (T item : items)
+        {
+            initItem(item);
+        }
     }
 
     @Override
@@ -391,29 +414,6 @@ public class FSelectManager<T> implements SelectManager<T>
             }
         }
         listRemove(mListItem, item);
-    }
-
-    @Override
-    public final void insertItem(int index, T item)
-    {
-        if (item == null)
-            return;
-
-        mListItem.add(index, item);
-        initItem(item);
-    }
-
-    @Override
-    public final void insertItem(int index, List<T> items)
-    {
-        if (items == null || items.isEmpty())
-            return;
-
-        mListItem.addAll(index, items);
-        for (T item : items)
-        {
-            initItem(item);
-        }
     }
 
     @Override

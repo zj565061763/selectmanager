@@ -140,18 +140,34 @@ public interface SelectManager<T>
     void setItems(List<T> items);
 
     /**
-     * 添加数据
-     *
-     * @param items
-     */
-    void appendItems(List<T> items);
-
-    /**
-     * 添加数据
+     * 在末尾添加数据
      *
      * @param item
      */
-    void appendItem(T item);
+    void addItem(T item);
+
+    /**
+     * 在末尾添加数据
+     *
+     * @param items
+     */
+    void addItems(List<T> items);
+
+    /**
+     * 在index位置添加数据
+     *
+     * @param index
+     * @param item
+     */
+    void addItem(int index, T item);
+
+    /**
+     * 在index位置添加数据
+     *
+     * @param index
+     * @param items
+     */
+    void addItems(int index, List<T> items);
 
     /**
      * 移除数据
@@ -161,23 +177,7 @@ public interface SelectManager<T>
     void removeItem(T item);
 
     /**
-     * 插入数据
-     *
-     * @param index
-     * @param item
-     */
-    void insertItem(int index, T item);
-
-    /**
-     * 插入数据
-     *
-     * @param index
-     * @param items
-     */
-    void insertItem(int index, List<T> items);
-
-    /**
-     * 更新数据
+     * 更新index位置的数据
      *
      * @param index
      * @param item
