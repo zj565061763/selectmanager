@@ -2,7 +2,7 @@ package com.fanwe.lib.selectmanager;
 
 import java.util.List;
 
-interface SelectManager<T>
+public interface SelectManager<T>
 {
     /**
      * 添加回调对象
@@ -184,7 +184,7 @@ interface SelectManager<T>
         void setSelected(boolean selected);
     }
 
-    class SelectableModel implements FSelectManager.Selectable
+    class SelectableModel implements Selectable
     {
         private boolean selected;
 

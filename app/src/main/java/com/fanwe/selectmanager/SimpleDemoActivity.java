@@ -9,6 +9,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.fanwe.lib.selectmanager.FSelectManager;
+import com.fanwe.lib.selectmanager.SelectManager;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class SimpleDemoActivity extends AppCompatActivity implements View.OnClic
     private Button btn_0, btn_1, btn_2;
     private TextView tv_selected_info;
 
-    private final FSelectManager<Button> mSelectManager = new FSelectManager<>();
+    private final SelectManager<Button> mSelectManager = new FSelectManager<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -41,18 +42,16 @@ public class SimpleDemoActivity extends AppCompatActivity implements View.OnClic
     private void initSelectManager()
     {
         // 添加状态变更回调
-        mSelectManager.addCallback(new FSelectManager.Callback<Button>()
+        mSelectManager.addCallback(new SelectManager.Callback<Button>()
         {
             @Override
             public void onSelectedChanged(boolean selected, Button item)
             {
                 if (selected)
-                {
                     item.setTextColor(Color.RED);
-                } else
-                {
+                else
                     item.setTextColor(Color.BLACK);
-                }
+
                 updateSelectedInfo();
             }
         });
@@ -84,19 +83,19 @@ public class SimpleDemoActivity extends AppCompatActivity implements View.OnClic
                 {
                     case R.id.rb_single:
                         // 设置单选模式
-                        mSelectManager.setMode(FSelectManager.Mode.SINGLE);
+                        mSelectManager.setMode(SelectManager.Mode.SINGLE);
                         break;
                     case R.id.rb_single_must:
                         // 设置单选必选模式，这种模式是默认的模式
-                        mSelectManager.setMode(FSelectManager.Mode.SINGLE_MUST_ONE_SELECTED);
+                        mSelectManager.setMode(SelectManager.Mode.SINGLE_MUST_ONE_SELECTED);
                         break;
                     case R.id.rb_multi:
                         // 设置多选模式
-                        mSelectManager.setMode(FSelectManager.Mode.MULTI);
+                        mSelectManager.setMode(SelectManager.Mode.MULTI);
                         break;
                     case R.id.rb_multi_must:
                         // 设置多选必选模式
-                        mSelectManager.setMode(FSelectManager.Mode.MULTI_MUST_ONE_SELECTED);
+                        mSelectManager.setMode(SelectManager.Mode.MULTI_MUST_ONE_SELECTED);
                         break;
                 }
             }

@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.fanwe.lib.selectmanager.FSelectManager;
+import com.fanwe.lib.selectmanager.SelectManager;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class ListDemoActivity extends AppCompatActivity
         mTvSelectedInfo = findViewById(R.id.tv_selected_info);
 
         mAdapter = new ListDemoAdapter(DataModel.get(50));
-        mAdapter.getSelectManager().addCallback(new FSelectManager.Callback<DataModel>()
+        mAdapter.getSelectManager().addCallback(new SelectManager.Callback<DataModel>()
         {
             @Override
             public void onSelectedChanged(boolean selected, DataModel item)

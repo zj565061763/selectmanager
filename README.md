@@ -18,26 +18,21 @@
 
 1. 创建FSelectManager
 ```java
-private final FSelectManager<Button> mSelectManager = new FSelectManager<>();
+private final SelectManager<Button> mSelectManager = new FSelectManager<>();
 ```
 
 2. 添加选中状态变化回调
 ```java
-mSelectManager.addCallback(new FSelectManager.Callback<Button>()
+mSelectManager.addCallback(new SelectManager.Callback<Button>()
 {
     @Override
-    public void onNormal(Button item)
+    public void onSelectedChanged(boolean selected, Button item)
     {
-        // 状态正常回调
-        item.setTextColor(Color.BLACK);
-        updateSelectedInfo();
-    }
+        if (selected)
+            item.setTextColor(Color.RED);
+        else
+            item.setTextColor(Color.BLACK);
 
-    @Override
-    public void onSelected(Button item)
-    {
-        // 状态选中回调
-        item.setTextColor(Color.RED);
         updateSelectedInfo();
     }
 });
@@ -61,19 +56,19 @@ private void initRadioGroup()
             {
                 case R.id.rb_single:
                     // 设置单选模式
-                    mSelectManager.setMode(FSelectManager.Mode.SINGLE);
+                    mSelectManager.setMode(SelectManager.Mode.SINGLE);
                     break;
                 case R.id.rb_single_must:
                     // 设置单选必选模式，这种模式是默认的模式
-                    mSelectManager.setMode(FSelectManager.Mode.SINGLE_MUST_ONE_SELECTED);
+                    mSelectManager.setMode(SelectManager.Mode.SINGLE_MUST_ONE_SELECTED);
                     break;
                 case R.id.rb_multi:
                     // 设置多选模式
-                    mSelectManager.setMode(FSelectManager.Mode.MULTI);
+                    mSelectManager.setMode(SelectManager.Mode.MULTI);
                     break;
                 case R.id.rb_multi_must:
                     // 设置多选必选模式
-                    mSelectManager.setMode(FSelectManager.Mode.MULTI_MUST_ONE_SELECTED);
+                    mSelectManager.setMode(SelectManager.Mode.MULTI_MUST_ONE_SELECTED);
                     break;
             }
         }
@@ -128,13 +123,13 @@ adapter的写法仅仅用来演示，性能的问题请开发者自己进行优�
 public class ListDemoAdapter extends BaseAdapter
 {
     private List<DataModel> mListModel;
-    private FSelectManager<DataModel> mSelectManager;
+    private SelectManager<DataModel> mSelectManager;
 
     public ListDemoAdapter(List<DataModel> listModel)
     {
         mListModel = listModel;
 
-        getSelectManager().setMode(FSelectManager.Mode.MULTI); // 设置多选模式
+        getSelectManager().setMode(SelectManager.Mode.MULTI); // 设置多选模式
         getSelectManager().setItems(listModel); // 设置数据
     }
 
@@ -153,7 +148,7 @@ public class ListDemoAdapter extends BaseAdapter
      *
      * @return
      */
-    public FSelectManager<DataModel> getSelectManager()
+    public SelectManager<DataModel> getSelectManager()
     {
         if (mSelectManager == null)
         {
@@ -176,19 +171,12 @@ public class ListDemoAdapter extends BaseAdapter
                     mSelectManager.setSelected(item, item.selected);
                 }
             };
-            mSelectManager.addCallback(new FSelectManager.Callback<DataModel>()
+            mSelectManager.addCallback(new SelectManager.Callback<DataModel>()
             {
                 @Override
-                public void onNormal(DataModel item)
+                public void onSelectedChanged(boolean selected, DataModel item)
                 {
-                    item.selected = false; // item状态设置为false
-                    notifyDataSetChanged();
-                }
-
-                @Override
-                public void onSelected(DataModel item)
-                {
-                    item.selected = true; // item状态设置为true
+                    item.selected = selected;
                     notifyDataSetChanged();
                 }
             });
@@ -257,16 +245,10 @@ public class ListDemoActivity extends AppCompatActivity
         mTvSelectedInfo = findViewById(R.id.tv_selected_info);
 
         mAdapter = new ListDemoAdapter(DataModel.get(50));
-        mAdapter.getSelectManager().addCallback(new FSelectManager.Callback<DataModel>()
+        mAdapter.getSelectManager().addCallback(new SelectManager.Callback<DataModel>()
         {
             @Override
-            public void onNormal(DataModel item)
-            {
-                updateSelectedInfo();
-            }
-
-            @Override
-            public void onSelected(DataModel item)
+            public void onSelectedChanged(boolean selected, DataModel item)
             {
                 updateSelectedInfo();
             }
@@ -280,7 +262,7 @@ public class ListDemoActivity extends AppCompatActivity
     private void updateSelectedInfo()
     {
         String info = "";
-        if (mAdapter.getSelectManager().isSingleMode())
+        if (mAdapter.getSelectManager().getMode().isSingleType())
         {
             final DataModel model = mAdapter.getSelectManager().getSelectedItem(); // 获得选中的项
             if (model != null)

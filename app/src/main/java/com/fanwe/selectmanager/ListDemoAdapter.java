@@ -7,19 +7,20 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 
 import com.fanwe.lib.selectmanager.FSelectManager;
+import com.fanwe.lib.selectmanager.SelectManager;
 
 import java.util.List;
 
 public class ListDemoAdapter extends BaseAdapter
 {
     private List<DataModel> mListModel;
-    private FSelectManager<DataModel> mSelectManager;
+    private SelectManager<DataModel> mSelectManager;
 
     public ListDemoAdapter(List<DataModel> listModel)
     {
         mListModel = listModel;
 
-        getSelectManager().setMode(FSelectManager.Mode.MULTI); // 设置多选模式
+        getSelectManager().setMode(SelectManager.Mode.MULTI); // 设置多选模式
         getSelectManager().setItems(listModel); // 设置数据
     }
 
@@ -38,7 +39,7 @@ public class ListDemoAdapter extends BaseAdapter
      *
      * @return
      */
-    public FSelectManager<DataModel> getSelectManager()
+    public SelectManager<DataModel> getSelectManager()
     {
         if (mSelectManager == null)
         {
@@ -61,7 +62,7 @@ public class ListDemoAdapter extends BaseAdapter
                     mSelectManager.setSelected(item, item.selected);
                 }
             };
-            mSelectManager.addCallback(new FSelectManager.Callback<DataModel>()
+            mSelectManager.addCallback(new SelectManager.Callback<DataModel>()
             {
                 @Override
                 public void onSelectedChanged(boolean selected, DataModel item)
