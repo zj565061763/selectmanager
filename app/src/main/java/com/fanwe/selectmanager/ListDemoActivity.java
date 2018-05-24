@@ -41,7 +41,7 @@ public class ListDemoActivity extends AppCompatActivity
     private void updateSelectedInfo()
     {
         String info = "";
-        if (mAdapter.getSelectManager().isSingleMode())
+        if (mAdapter.getSelectManager().getMode().isSingleType())
         {
             final DataModel model = mAdapter.getSelectManager().getSelectedItem(); // 获得选中的项
             if (model != null)

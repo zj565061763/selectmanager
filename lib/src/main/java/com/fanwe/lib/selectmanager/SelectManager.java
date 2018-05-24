@@ -4,39 +4,119 @@ import java.util.List;
 
 interface SelectManager<T>
 {
+    /**
+     * 添加回调对象
+     *
+     * @param callback
+     */
     void addCallback(Callback<T> callback);
 
+    /**
+     * 移除回调对象
+     *
+     * @param callback
+     */
     void removeCallback(Callback<T> callback);
 
-    void setMode(FSelectManager.Mode mode);
+    /**
+     * 设置选择模式
+     *
+     * @param mode
+     */
+    void setMode(Mode mode);
 
-    FSelectManager.Mode getMode();
+    /**
+     * 返回当前的选择模式
+     *
+     * @return
+     */
+    Mode getMode();
 
-    boolean isSingleMode();
-
+    /**
+     * item是否被选中
+     *
+     * @param item
+     * @return
+     */
     boolean isSelected(T item);
 
+    /**
+     * 返回当前选中的位置，{@link Mode#isSingleType()} == true 的时候才可以调用此方法
+     *
+     * @return
+     */
     int getSelectedIndex();
 
+    /**
+     * 返回当前选中的位置，{@link Mode#isSingleType()} == false 的时候才可以调用此方法
+     *
+     * @return
+     */
     List<Integer> getSelectedIndexs();
 
+    /**
+     * 返回当前选中的item，{@link Mode#isSingleType()} == true 的时候才可以调用此方法
+     *
+     * @return
+     */
     T getSelectedItem();
 
+    /**
+     * 返回当前选中的item，{@link Mode#isSingleType()} == false 的时候才可以调用此方法
+     *
+     * @return
+     */
     List<T> getSelectedItems();
 
+    /**
+     * 全部选中，{@link Mode#isSingleType()} == false 的时候才可以调用此方法
+     */
     void selectAll();
 
+    /**
+     * 模拟点击该位置
+     *
+     * @param index
+     */
     void performClick(int index);
 
+    /**
+     * 设置该位置的选中状态
+     *
+     * @param index
+     * @param selected
+     */
     void setSelected(int index, boolean selected);
 
+    /**
+     * 模拟点击该项
+     *
+     * @param item
+     */
     void performClick(T item);
 
+    /**
+     * 设置该项的选中状态
+     *
+     * @param item
+     * @param selected
+     */
     void setSelected(T item, boolean selected);
 
+    /**
+     * 清空选中的项
+     */
     void clearSelected();
 
+    /**
+     * 返回item的位置
+     *
+     * @param item
+     * @return
+     */
     int indexOf(T item);
+
+    //---------- data start ----------
 
     void setItems(T... items);
 
@@ -53,6 +133,8 @@ interface SelectManager<T>
     void insertItem(int index, List<T> items);
 
     void updateItem(int index, T item);
+
+    //---------- data end ----------
 
     enum Mode
     {
@@ -72,6 +154,27 @@ interface SelectManager<T>
          * 多选，可以一项都没选中
          */
         MULTI;
+
+        /**
+         * 是否是单选类型，{@link Mode#SINGLE}或者{@link Mode#SINGLE_MUST_ONE_SELECTED}
+         *
+         * @return
+         */
+        public boolean isSingleType()
+        {
+            return this == SINGLE || this == SINGLE_MUST_ONE_SELECTED;
+        }
+    }
+
+    interface Callback<T>
+    {
+        /**
+         * 状态变化回调
+         *
+         * @param selected true-选中，false-未选中
+         * @param item
+         */
+        void onSelectedChanged(boolean selected, T item);
     }
 
     interface Selectable
@@ -96,16 +199,5 @@ interface SelectManager<T>
         {
             this.selected = selected;
         }
-    }
-
-    interface Callback<T>
-    {
-        /**
-         * 状态变化回调
-         *
-         * @param selected true-选中，false-未选中
-         * @param item
-         */
-        void onSelectedChanged(boolean selected, T item);
     }
 }

@@ -109,7 +109,7 @@ public class SimpleDemoActivity extends AppCompatActivity implements View.OnClic
     private void updateSelectedInfo()
     {
         String info = "";
-        if (mSelectManager.isSingleMode())
+        if (mSelectManager.getMode().isSingleType())
         {
             final Button button = mSelectManager.getSelectedItem(); // 获得选中的项
             if (button != null)

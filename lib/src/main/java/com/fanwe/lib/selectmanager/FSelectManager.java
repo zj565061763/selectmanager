@@ -21,11 +21,6 @@ public class FSelectManager<T> implements SelectManager<T>
 
     private final List<Callback<T>> mListCallback = new CopyOnWriteArrayList<>();
 
-    /**
-     * 添加选择状态回调
-     *
-     * @param callback
-     */
     @Override
     public final void addCallback(final Callback<T> callback)
     {
@@ -35,22 +30,12 @@ public class FSelectManager<T> implements SelectManager<T>
         mListCallback.add(callback);
     }
 
-    /**
-     * 移除选择状态回调
-     *
-     * @param callback
-     */
     @Override
     public final void removeCallback(final Callback<T> callback)
     {
         mListCallback.remove(callback);
     }
 
-    /**
-     * 设置选中模式
-     *
-     * @param mode
-     */
     @Override
     public final void setMode(final Mode mode)
     {
@@ -61,58 +46,24 @@ public class FSelectManager<T> implements SelectManager<T>
         mMode = mode;
     }
 
-    /**
-     * 返回当前的模式
-     *
-     * @return
-     */
     @Override
     public final Mode getMode()
     {
         return mMode;
     }
 
-    /**
-     * 是否单选模式
-     *
-     * @return
-     */
-    @Override
-    public final boolean isSingleMode()
-    {
-        switch (mMode)
-        {
-            case SINGLE:
-            case SINGLE_MUST_ONE_SELECTED:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    /**
-     * 某个Item是否被选中
-     *
-     * @param item
-     * @return
-     */
     @Override
     public final boolean isSelected(final T item)
     {
         if (item == null)
             return false;
 
-        if (isSingleMode())
+        if (getMode().isSingleType())
             return item == mCurrentItem;
         else
             return listContains(mListSelected, item);
     }
 
-    /**
-     * 返回选中的位置(单选模式)
-     *
-     * @return
-     */
     @Override
     public final int getSelectedIndex()
     {
@@ -120,11 +71,6 @@ public class FSelectManager<T> implements SelectManager<T>
         return indexOf(item);
     }
 
-    /**
-     * 返回选中的位置(多选模式)
-     *
-     * @return
-     */
     @Override
     public final List<Integer> getSelectedIndexs()
     {
@@ -138,42 +84,29 @@ public class FSelectManager<T> implements SelectManager<T>
         return list;
     }
 
-    /**
-     * 返回选中项(单选模式)
-     *
-     * @return
-     */
     @Override
     public final T getSelectedItem()
     {
-        if (isSingleMode())
+        if (getMode().isSingleType())
             return mCurrentItem;
         else
             throw new UnsupportedOperationException("this method is not supported for multi mode");
 
     }
 
-    /**
-     * 返回选中项(多选模式)
-     *
-     * @return
-     */
     @Override
     public final List<T> getSelectedItems()
     {
-        if (isSingleMode())
+        if (getMode().isSingleType())
             throw new UnsupportedOperationException("this method is not supported for single mode");
         else
             return new ArrayList<>(mListSelected);
     }
 
-    /**
-     * 全选(多选模式)
-     */
     @Override
     public final void selectAll()
     {
-        if (isSingleMode())
+        if (getMode().isSingleType())
             throw new UnsupportedOperationException("this method is not supported for single mode");
 
         for (T item : mListItem)
@@ -187,11 +120,6 @@ public class FSelectManager<T> implements SelectManager<T>
         return index >= 0 && index < mListItem.size();
     }
 
-    /**
-     * 模拟点击该位置
-     *
-     * @param index
-     */
     @Override
     public final void performClick(int index)
     {
@@ -202,12 +130,6 @@ public class FSelectManager<T> implements SelectManager<T>
         setSelectedWithoutCheckContains(item, !isSelected(item));
     }
 
-    /**
-     * 设置该位置的选中状态
-     *
-     * @param index
-     * @param selected
-     */
     @Override
     public final void setSelected(int index, boolean selected)
     {
@@ -218,11 +140,6 @@ public class FSelectManager<T> implements SelectManager<T>
         setSelectedWithoutCheckContains(item, selected);
     }
 
-    /**
-     * 模拟点击该项
-     *
-     * @param item
-     */
     @Override
     public final void performClick(T item)
     {
@@ -232,12 +149,6 @@ public class FSelectManager<T> implements SelectManager<T>
         setSelectedWithoutCheckContains(item, !isSelected(item));
     }
 
-    /**
-     * 设置该项的选中状态
-     *
-     * @param item
-     * @param selected
-     */
     @Override
     public final void setSelected(T item, boolean selected)
     {
@@ -245,6 +156,38 @@ public class FSelectManager<T> implements SelectManager<T>
             return;
 
         setSelectedWithoutCheckContains(item, selected);
+    }
+
+    @Override
+    public final void clearSelected()
+    {
+        if (getMode().isSingleType())
+        {
+            if (mCurrentItem != null)
+            {
+                final T old = mCurrentItem;
+                mCurrentItem = null;
+                notifyNormal(old);
+            }
+        } else
+        {
+            if (!mListSelected.isEmpty())
+            {
+                final Iterator<T> it = mListSelected.iterator();
+                while (it.hasNext())
+                {
+                    final T item = it.next();
+                    it.remove(); // 移除item
+                    notifyNormal(item);
+                }
+            }
+        }
+    }
+
+    @Override
+    public final int indexOf(T item)
+    {
+        return listIndexOf(mListItem, item);
     }
 
     private void setSelectedWithoutCheckContains(T item, boolean selected)
@@ -354,50 +297,14 @@ public class FSelectManager<T> implements SelectManager<T>
         onSelectedChanged(true, item);
     }
 
+    /**
+     * 选中状态变化
+     *
+     * @param selected
+     * @param item
+     */
     protected void onSelectedChanged(boolean selected, T item)
     {
-    }
-
-    /**
-     * 清除选中
-     */
-    @Override
-    public final void clearSelected()
-    {
-        if (isSingleMode())
-        {
-            if (mCurrentItem != null)
-            {
-                final T old = mCurrentItem;
-                mCurrentItem = null;
-                notifyNormal(old);
-            }
-        } else
-        {
-            if (!mListSelected.isEmpty())
-            {
-                final Iterator<T> it = mListSelected.iterator();
-                while (it.hasNext())
-                {
-                    final T item = it.next();
-                    it.remove();
-                    notifyNormal(item);
-                }
-                mListSelected.clear(); //再清一次
-            }
-        }
-    }
-
-    /**
-     * 返回item的位置
-     *
-     * @param item
-     * @return
-     */
-    @Override
-    public final int indexOf(T item)
-    {
-        return listIndexOf(mListItem, item);
     }
 
     //---------- data start ----------
@@ -481,7 +388,7 @@ public class FSelectManager<T> implements SelectManager<T>
     {
         if (isSelected(item))
         {
-            if (isSingleMode())
+            if (getMode().isSingleType())
             {
                 clearSelected();
             } else
