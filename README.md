@@ -178,9 +178,8 @@ public class ListDemoAdapter extends FSimpleAdapter<DataModel>
 {
     private SelectManager<DataModel> mSelectManager;
 
-    public ListDemoAdapter(Activity activity)
+    public ListDemoAdapter()
     {
-        super(activity);
         /**
          * 设置多选模式
          */
@@ -299,7 +298,7 @@ public class ListDemoAdapter extends FSimpleAdapter<DataModel>
 public class ListDemoActivity extends AppCompatActivity
 {
     private ListView mListView;
-    private ListDemoAdapter mAdapter;
+    private ListDemoAdapter mAdapter = new ListDemoAdapter();
 
     private TextView tv_selected_info;
 
@@ -310,8 +309,8 @@ public class ListDemoActivity extends AppCompatActivity
         setContentView(R.layout.activity_list_demo);
         mListView = findViewById(R.id.lv_content);
         tv_selected_info = findViewById(R.id.tv_selected_info);
+        mListView.setAdapter(mAdapter);
 
-        mAdapter = new ListDemoAdapter(this);
         mAdapter.getSelectManager().addCallback(new SelectManager.Callback<DataModel>()
         {
             @Override
@@ -337,7 +336,6 @@ public class ListDemoActivity extends AppCompatActivity
                 }
             }
         });
-        mListView.setAdapter(mAdapter);
 
         for (int i = 0; i < 50; i++)
         {

@@ -1,6 +1,5 @@
 package com.fanwe.selectmanager;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +16,8 @@ public class ListDemoAdapter extends FSimpleAdapter<DataModel>
 {
     private SelectManager<DataModel> mSelectManager;
 
-    public ListDemoAdapter(Activity activity)
+    public ListDemoAdapter()
     {
-        super(activity);
         /**
          * 设置多选模式
          */
