@@ -7,7 +7,7 @@
 * 多选必选
 
 # Gradle
-`implementation 'com.fanwe.android:selectmanager:1.0.10'`
+[![](https://jitpack.io/v/zj565061763/selectmanager.svg)](https://jitpack.io/#zj565061763/selectmanager)
 
 # 简单效果
 ![](http://thumbsnap.com/i/sodYq9ca.gif?0522)
