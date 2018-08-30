@@ -1,14 +1,14 @@
-package com.fanwe.selectmanager;
+package com.sd.selectmanager;
 
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.fanwe.lib.adapter.FSimpleAdapter;
-import com.fanwe.lib.adapter.data.DataHolder;
-import com.fanwe.lib.selectmanager.FSelectManager;
-import com.fanwe.lib.selectmanager.SelectManager;
+import com.sd.lib.adapter.FSimpleAdapter;
+import com.sd.lib.adapter.data.DataHolder;
+import com.sd.lib.selectmanager.FSelectManager;
+import com.sd.lib.selectmanager.SelectManager;
 
 import java.util.List;
 

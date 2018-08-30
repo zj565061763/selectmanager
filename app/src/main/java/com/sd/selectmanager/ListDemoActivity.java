@@ -1,4 +1,4 @@
-package com.fanwe.selectmanager;
+package com.sd.selectmanager;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.fanwe.lib.selectmanager.SelectManager;
+import com.sd.lib.selectmanager.SelectManager;
 
 import java.util.List;
 

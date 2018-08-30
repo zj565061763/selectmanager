@@ -1,4 +1,4 @@
-package com.fanwe.selectmanager;
+package com.sd.selectmanager;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -8,8 +8,8 @@ import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.fanwe.lib.selectmanager.FSelectManager;
-import com.fanwe.lib.selectmanager.SelectManager;
+import com.sd.lib.selectmanager.FSelectManager;
+import com.sd.lib.selectmanager.SelectManager;
 
 import java.util.List;
 

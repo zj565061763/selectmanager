@@ -1,6 +1,6 @@
-package com.fanwe.selectmanager;
+package com.sd.selectmanager;
 
-import com.fanwe.lib.selectmanager.SelectManager;
+import com.sd.lib.selectmanager.SelectManager;
 
 public class DataModel implements SelectManager.Selectable
 {

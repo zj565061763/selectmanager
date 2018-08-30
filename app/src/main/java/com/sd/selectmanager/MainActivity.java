@@ -1,4 +1,4 @@
-package com.fanwe.selectmanager;
+package com.sd.selectmanager;
 
 import android.content.Intent;
 import android.os.Bundle;
