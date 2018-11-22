@@ -47,10 +47,13 @@ public class FSelectManager<T> implements SelectManager<T>
     public final void setMode(final Mode mode)
     {
         if (mode == null)
-            return;
+            throw new NullPointerException("mode is null");
 
-        clearSelected();
-        mMode = mode;
+        if (mMode != mode)
+        {
+            clearSelected();
+            mMode = mode;
+        }
     }
 
     @Override
