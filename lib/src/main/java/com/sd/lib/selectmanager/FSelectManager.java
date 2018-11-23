@@ -121,7 +121,7 @@ public class FSelectManager<T> implements SelectManager<T>
 
         for (T item : mListItem)
         {
-            setSelectedWithoutCheckContains(item, true);
+            setSelectedInternal(item, true);
         }
     }
 
@@ -137,7 +137,7 @@ public class FSelectManager<T> implements SelectManager<T>
             return;
 
         final T item = mListItem.get(index);
-        setSelectedWithoutCheckContains(item, !isSelected(item));
+        setSelectedInternal(item, !isSelected(item));
     }
 
     @Override
@@ -147,7 +147,7 @@ public class FSelectManager<T> implements SelectManager<T>
             return;
 
         final T item = mListItem.get(index);
-        setSelectedWithoutCheckContains(item, selected);
+        setSelectedInternal(item, selected);
     }
 
     @Override
@@ -156,7 +156,7 @@ public class FSelectManager<T> implements SelectManager<T>
         if (indexOf(item) < 0)
             return;
 
-        setSelectedWithoutCheckContains(item, !isSelected(item));
+        setSelectedInternal(item, !isSelected(item));
     }
 
     @Override
@@ -165,7 +165,7 @@ public class FSelectManager<T> implements SelectManager<T>
         if (indexOf(item) < 0)
             return;
 
-        setSelectedWithoutCheckContains(item, selected);
+        setSelectedInternal(item, selected);
     }
 
     @Override
@@ -200,7 +200,7 @@ public class FSelectManager<T> implements SelectManager<T>
         return listIndexOf(mListItem, item);
     }
 
-    private void setSelectedWithoutCheckContains(T item, boolean selected)
+    private void setSelectedInternal(T item, boolean selected)
     {
         if (item == null)
             return;
@@ -402,7 +402,7 @@ public class FSelectManager<T> implements SelectManager<T>
                 clearSelected();
             } else
             {
-                setSelectedWithoutCheckContains(item, false);
+                setSelectedInternal(item, false);
                 if (isSelected(item))
                 {
                     // 多选必选模式，并且当前仅有一项item，直接清空选中
@@ -430,7 +430,7 @@ public class FSelectManager<T> implements SelectManager<T>
         if (item instanceof Selectable)
         {
             final boolean selected = ((Selectable) item).isSelected();
-            setSelectedWithoutCheckContains(item, selected);
+            setSelectedInternal(item, selected);
         }
 
         onInitItem(item);
