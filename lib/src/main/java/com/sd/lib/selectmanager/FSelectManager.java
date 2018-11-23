@@ -153,7 +153,7 @@ public class FSelectManager<T> implements SelectManager<T>
     @Override
     public final void performClick(T item)
     {
-        if (!listContains(mListItem, item))
+        if (indexOf(item) < 0)
             return;
 
         setSelectedWithoutCheckContains(item, !isSelected(item));
@@ -162,7 +162,7 @@ public class FSelectManager<T> implements SelectManager<T>
     @Override
     public final void setSelected(T item, boolean selected)
     {
-        if (!listContains(mListItem, item))
+        if (indexOf(item) < 0)
             return;
 
         setSelectedWithoutCheckContains(item, selected);
