@@ -71,7 +71,7 @@ public class FSelectManager<T> implements SelectManager<T>
         if (getMode().isSingleType())
             return item == mCurrentItem;
         else
-            return listContains(mListSelected, item);
+            return listIndexOf(mListSelected, item) >= 0;
     }
 
     @Override
@@ -276,7 +276,7 @@ public class FSelectManager<T> implements SelectManager<T>
 
     private void selectItemMulti(T item)
     {
-        if (listContains(mListSelected, item))
+        if (listIndexOf(mListSelected, item) >= 0)
             return;
 
         mListSelected.add(item);
@@ -470,7 +470,11 @@ public class FSelectManager<T> implements SelectManager<T>
 
     private static <T> boolean listRemove(List<T> list, T item)
     {
-        return list.remove(item);
+        final int index = listIndexOf(list, item);
+        if (index < 0)
+            return false;
+
+        return list.remove(index) == item;
     }
 
     //---------- utils end ----------
