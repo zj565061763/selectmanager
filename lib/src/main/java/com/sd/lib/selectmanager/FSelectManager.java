@@ -459,7 +459,13 @@ public class FSelectManager<T> implements SelectManager<T>
 
     private static <T> int listIndexOf(List<T> list, T item)
     {
-        return list.indexOf(item);
+        final int size = list.size();
+        for (int i = 0; i < size; i++)
+        {
+            if (list.get(i) == item)
+                return i;
+        }
+        return -1;
     }
 
     private static <T> boolean listRemove(List<T> list, T item)
