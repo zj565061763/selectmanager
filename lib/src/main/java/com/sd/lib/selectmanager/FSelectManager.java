@@ -234,13 +234,10 @@ public class FSelectManager<T> implements SelectManager<T>
                     selectItemMulti(item);
                 } else
                 {
-                    if (listContains(mListSelected, item))
+                    if (mListSelected.size() > 1)
                     {
-                        if (mListSelected.size() > 1)
-                        {
-                            listRemove(mListSelected, item);
+                        if (listRemove(mListSelected, item))
                             notifyNormal(item);
-                        }
                     }
                 }
                 break;
@@ -250,11 +247,8 @@ public class FSelectManager<T> implements SelectManager<T>
                     selectItemMulti(item);
                 } else
                 {
-                    if (listContains(mListSelected, item))
-                    {
-                        listRemove(mListSelected, item);
+                    if (listRemove(mListSelected, item))
                         notifyNormal(item);
-                    }
                 }
                 break;
             default:
@@ -451,11 +445,6 @@ public class FSelectManager<T> implements SelectManager<T>
     }
 
     //---------- utils start ----------
-
-    private static <T> boolean listContains(List<T> list, T item)
-    {
-        return list.contains(item);
-    }
 
     private static <T> int listIndexOf(List<T> list, T item)
     {
