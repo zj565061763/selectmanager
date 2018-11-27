@@ -310,10 +310,7 @@ public class FSelectManager<T> implements SelectManager<T>
      */
     protected void onSelectedChanged(boolean selected, T item)
     {
-        if (item instanceof Selectable)
-        {
-            ((Selectable) item).setSelected(selected);
-        }
+
     }
 
     //---------- data start ----------
@@ -426,12 +423,6 @@ public class FSelectManager<T> implements SelectManager<T>
 
     private void initItem(T item)
     {
-        if (item instanceof Selectable)
-        {
-            final boolean selected = ((Selectable) item).isSelected();
-            setSelectedInternal(item, selected);
-        }
-
         onInitItem(item);
 
         if (mOnItemInitCallback != null)

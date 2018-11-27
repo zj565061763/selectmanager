@@ -236,28 +236,4 @@ public interface SelectManager<T>
     {
         void onInitItem(T item);
     }
-
-    interface Selectable
-    {
-        boolean isSelected();
-
-        void setSelected(boolean selected);
-    }
-
-    class SelectableModel implements Selectable
-    {
-        private boolean selected;
-
-        @Override
-        public boolean isSelected()
-        {
-            return selected;
-        }
-
-        @Override
-        public void setSelected(boolean selected)
-        {
-            this.selected = selected;
-        }
-    }
 }

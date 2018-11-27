@@ -19,11 +19,6 @@ public class ListDemoAdapter extends FSimpleAdapter<DataModel>
     public ListDemoAdapter()
     {
         /**
-         * 设置多选模式
-         */
-        getSelectManager().setMode(SelectManager.Mode.MULTI);
-
-        /**
          * adapter 数据变化监听
          */
         getDataHolder().addDataChangeCallback(new DataHolder.DataChangeCallback<DataModel>()
@@ -76,16 +71,31 @@ public class ListDemoAdapter extends FSimpleAdapter<DataModel>
         if (mSelectManager == null)
         {
             mSelectManager = new FSelectManager<>();
+            /**
+             * 设置多选模式
+             */
+            mSelectManager.setMode(SelectManager.Mode.MULTI);
+            /**
+             * 设置item初始化回调
+             */
+            mSelectManager.setOnItemInitCallback(new SelectManager.OnItemInitCallback<DataModel>()
+            {
+                @Override
+                public void onInitItem(DataModel item)
+                {
+                    /**
+                     * 假如添加的item有初始选中状态，则要在此同步选中状态到SelectManager中：mSelectManager.setSelected(item, selected);
+                     */
+                }
+            });
+            /**
+             * 设置选中变化回调
+             */
             mSelectManager.addCallback(new SelectManager.Callback<DataModel>()
             {
                 @Override
                 public void onSelectedChanged(boolean selected, DataModel item)
                 {
-                    /**
-                     * 由于item实现了SelectManager.Selectable接口，所以这一句不用执行
-                     */
-                    // item.setSelected(selected);
-
                     /**
                      * 选中状态变化通知刷新adapter
                      */
@@ -102,7 +112,7 @@ public class ListDemoAdapter extends FSimpleAdapter<DataModel>
         Button button = get(R.id.btn, convertView);
         button.setText(model.name);
 
-        if (model.selected)
+        if (getSelectManager().isSelected(model))
             button.setTextColor(Color.RED);
         else
             button.setTextColor(Color.BLACK);
