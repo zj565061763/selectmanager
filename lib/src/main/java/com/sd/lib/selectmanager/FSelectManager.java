@@ -2,8 +2,10 @@ package com.sd.lib.selectmanager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -17,7 +19,7 @@ public class FSelectManager<T> implements SelectManager<T>
     private final List<T> mListItem = new ArrayList<>();
 
     private T mCurrentItem;
-    private final List<T> mListSelected = new ArrayList<>();
+    private final Map<T, String> mMapSelected = new IdentityHashMap<>();
 
     private final List<Callback<T>> mListCallback = new CopyOnWriteArrayList<>();
     private OnItemInitCallback<T> mOnItemInitCallback;
@@ -71,7 +73,7 @@ public class FSelectManager<T> implements SelectManager<T>
         if (getMode().isSingleType())
             return item == mCurrentItem;
         else
-            return listIndexOf(mListSelected, item) >= 0;
+            return mMapSelected.containsKey(item);
     }
 
     @Override
@@ -110,7 +112,7 @@ public class FSelectManager<T> implements SelectManager<T>
         if (getMode().isSingleType())
             throw new UnsupportedOperationException("this method is not supported for single mode");
         else
-            return new ArrayList<>(mListSelected);
+            return new ArrayList<>(mMapSelected.keySet());
     }
 
     @Override
@@ -181,15 +183,12 @@ public class FSelectManager<T> implements SelectManager<T>
             }
         } else
         {
-            if (!mListSelected.isEmpty())
+            final Iterator<T> it = mMapSelected.keySet().iterator();
+            while (it.hasNext())
             {
-                final Iterator<T> it = mListSelected.iterator();
-                while (it.hasNext())
-                {
-                    final T item = it.next();
-                    it.remove(); // 移除item
-                    notifyNormal(item);
-                }
+                final T item = it.next();
+                it.remove(); // 移除item
+                notifyNormal(item);
             }
         }
     }
@@ -234,9 +233,9 @@ public class FSelectManager<T> implements SelectManager<T>
                     selectItemMulti(item);
                 } else
                 {
-                    if (mListSelected.size() > 1)
+                    if (mMapSelected.size() > 1)
                     {
-                        if (listRemove(mListSelected, item))
+                        if (mMapSelected.remove(item) != null)
                             notifyNormal(item);
                     }
                 }
@@ -247,7 +246,7 @@ public class FSelectManager<T> implements SelectManager<T>
                     selectItemMulti(item);
                 } else
                 {
-                    if (listRemove(mListSelected, item))
+                    if (mMapSelected.remove(item) != null)
                         notifyNormal(item);
                 }
                 break;
@@ -270,10 +269,10 @@ public class FSelectManager<T> implements SelectManager<T>
 
     private void selectItemMulti(T item)
     {
-        if (listIndexOf(mListSelected, item) >= 0)
+        if (mMapSelected.containsKey(item))
             return;
 
-        mListSelected.add(item);
+        mMapSelected.put(item, "");
         notifySelected(item);
     }
 
@@ -334,7 +333,7 @@ public class FSelectManager<T> implements SelectManager<T>
     public final void setItems(List<T> items)
     {
         mCurrentItem = null;
-        mListSelected.clear();
+        mMapSelected.clear();
         mListItem.clear();
 
         if (items != null)
