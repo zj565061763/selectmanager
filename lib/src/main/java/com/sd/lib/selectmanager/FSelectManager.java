@@ -23,6 +23,7 @@ public class FSelectManager<T> implements SelectManager<T>
 
     private final List<Callback<T>> mListCallback = new CopyOnWriteArrayList<>();
     private OnItemInitCallback<T> mOnItemInitCallback;
+    private SelectedInterceptor<T> mSelectedInterceptor;
 
     @Override
     public final void addCallback(final Callback<T> callback)
@@ -43,6 +44,12 @@ public class FSelectManager<T> implements SelectManager<T>
     public final void setOnItemInitCallback(OnItemInitCallback<T> callback)
     {
         mOnItemInitCallback = callback;
+    }
+
+    @Override
+    public final void setSelectedInterceptor(SelectedInterceptor<T> interceptor)
+    {
+        mSelectedInterceptor = interceptor;
     }
 
     @Override
@@ -199,6 +206,22 @@ public class FSelectManager<T> implements SelectManager<T>
         return listIndexOf(mListItem, item);
     }
 
+    private SelectedInterceptor<T> getSelectedInterceptor()
+    {
+        if (mSelectedInterceptor == null)
+        {
+            mSelectedInterceptor = new SelectedInterceptor<T>()
+            {
+                @Override
+                public boolean interceptItem(T item, boolean selected)
+                {
+                    return false;
+                }
+            };
+        }
+        return mSelectedInterceptor;
+    }
+
     private void setSelectedInternal(T item, boolean selected)
     {
         if (item == null)
@@ -220,6 +243,9 @@ public class FSelectManager<T> implements SelectManager<T>
                 {
                     if (mCurrentItem == item)
                     {
+                        if (getSelectedInterceptor().interceptItem(item, false))
+                            return;
+
                         final T old = mCurrentItem;
                         mCurrentItem = null;
 
@@ -235,6 +261,12 @@ public class FSelectManager<T> implements SelectManager<T>
                 {
                     if (mMapSelected.size() > 1)
                     {
+                        if (mMapSelected.containsKey(item))
+                        {
+                            if (getSelectedInterceptor().interceptItem(item, false))
+                                return;
+                        }
+
                         if (mMapSelected.remove(item) != null)
                             notifyNormal(item);
                     }
@@ -246,6 +278,12 @@ public class FSelectManager<T> implements SelectManager<T>
                     selectItemMulti(item);
                 } else
                 {
+                    if (mMapSelected.containsKey(item))
+                    {
+                        if (getSelectedInterceptor().interceptItem(item, false))
+                            return;
+                    }
+
                     if (mMapSelected.remove(item) != null)
                         notifyNormal(item);
                 }
@@ -260,6 +298,9 @@ public class FSelectManager<T> implements SelectManager<T>
         if (mCurrentItem == item)
             return;
 
+        if (getSelectedInterceptor().interceptItem(item, true))
+            return;
+
         final T old = mCurrentItem;
         mCurrentItem = item;
 
@@ -270,6 +311,9 @@ public class FSelectManager<T> implements SelectManager<T>
     private void selectItemMulti(T item)
     {
         if (mMapSelected.containsKey(item))
+            return;
+
+        if (getSelectedInterceptor().interceptItem(item, true))
             return;
 
         mMapSelected.put(item, "");

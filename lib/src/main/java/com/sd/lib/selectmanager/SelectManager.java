@@ -26,6 +26,13 @@ public interface SelectManager<T>
     void setOnItemInitCallback(OnItemInitCallback<T> callback);
 
     /**
+     * 设置选中状态拦截
+     *
+     * @param interceptor
+     */
+    void setSelectedInterceptor(SelectedInterceptor<T> interceptor);
+
+    /**
      * 设置选择模式
      *
      * @param mode
@@ -235,5 +242,17 @@ public interface SelectManager<T>
     interface OnItemInitCallback<T>
     {
         void onInitItem(T item);
+    }
+
+    interface SelectedInterceptor<T>
+    {
+        /**
+         * 拦截
+         *
+         * @param item
+         * @param selected
+         * @return true-拦截掉，
+         */
+        boolean interceptItem(T item, boolean selected);
     }
 }
