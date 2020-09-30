@@ -235,22 +235,6 @@ public class FSelectManager<T> implements SelectManager<T>
         return listIndexOf(mListItem, item);
     }
 
-    private SelectedInterceptor<T> getSelectedInterceptor()
-    {
-        if (mSelectedInterceptor == null)
-        {
-            mSelectedInterceptor = new SelectedInterceptor<T>()
-            {
-                @Override
-                public boolean interceptItem(T item, boolean selected)
-                {
-                    return false;
-                }
-            };
-        }
-        return mSelectedInterceptor;
-    }
-
     private void setSelectedInternal(T item, boolean selected)
     {
         if (item == null)
@@ -272,7 +256,7 @@ public class FSelectManager<T> implements SelectManager<T>
                 {
                     if (mCurrentItem == item)
                     {
-                        if (getSelectedInterceptor().interceptItem(item, false))
+                        if (interceptItemInternal(item, false))
                             return;
 
                         final T old = mCurrentItem;
@@ -292,7 +276,7 @@ public class FSelectManager<T> implements SelectManager<T>
                     {
                         if (mMapSelected.containsKey(item))
                         {
-                            if (getSelectedInterceptor().interceptItem(item, false))
+                            if (interceptItemInternal(item, false))
                                 return;
                         }
 
@@ -309,7 +293,7 @@ public class FSelectManager<T> implements SelectManager<T>
                 {
                     if (mMapSelected.containsKey(item))
                     {
-                        if (getSelectedInterceptor().interceptItem(item, false))
+                        if (interceptItemInternal(item, false))
                             return;
                     }
 
@@ -322,12 +306,24 @@ public class FSelectManager<T> implements SelectManager<T>
         }
     }
 
+    private boolean interceptItemInternal(T item, boolean selected)
+    {
+        if (mSelectedInterceptor != null)
+        {
+            if (mSelectedInterceptor.interceptItem(item, selected))
+                return true;
+        }
+
+        // TODO 判断拦截
+        return false;
+    }
+
     private void selectItemSingle(T item)
     {
         if (mCurrentItem == item)
             return;
 
-        if (getSelectedInterceptor().interceptItem(item, true))
+        if (interceptItemInternal(item, true))
             return;
 
         final T old = mCurrentItem;
@@ -342,7 +338,7 @@ public class FSelectManager<T> implements SelectManager<T>
         if (mMapSelected.containsKey(item))
             return;
 
-        if (getSelectedInterceptor().interceptItem(item, true))
+        if (interceptItemInternal(item, true))
             return;
 
         mMapSelected.put(item, "");
