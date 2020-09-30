@@ -21,11 +21,11 @@ public class FSelectManager<T> implements SelectManager<T>
     private T mCurrentItem;
     private final Map<T, String> mMapSelected = new IdentityHashMap<>();
 
-    private OnItemInitCallback<T> mOnItemInitCallback;
-    private SelectedInterceptor<T> mSelectedInterceptor;
-
     private final Map<Callback<T>, String> mCallbackHolder = new ConcurrentHashMap<>();
+    private OnItemInitCallback<T> mOnItemInitCallback;
     private Map<StateInterceptor<T>, String> mStateInterceptorHolder;
+
+    private SelectedInterceptor<T> mSelectedInterceptor;
 
     @Override
     public final void addCallback(final Callback<T> callback)
