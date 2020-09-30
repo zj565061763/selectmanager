@@ -187,7 +187,8 @@ public class FSelectManager<T> implements SelectManager<T>
         if (indexOf(item) < 0)
             return;
 
-        setSelectedInternal(item, !isSelected(item));
+        final boolean isSelected = isSelected(item);
+        setSelectedInternal(item, !isSelected);
     }
 
     @Override
