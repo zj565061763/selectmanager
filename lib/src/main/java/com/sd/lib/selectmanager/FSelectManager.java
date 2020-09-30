@@ -177,7 +177,8 @@ public class FSelectManager<T> implements SelectManager<T>
             return;
 
         final T item = mListItem.get(index);
-        setSelectedInternal(item, !isSelected(item));
+        final boolean isSelected = isSelected(item);
+        setSelectedInternal(item, !isSelected);
     }
 
     @Override
