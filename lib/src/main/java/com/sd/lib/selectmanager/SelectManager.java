@@ -110,19 +110,19 @@ public interface SelectManager<T>
     void performClick(int index);
 
     /**
+     * 模拟点击该项
+     *
+     * @param item
+     */
+    void performClick(T item);
+
+    /**
      * 设置该位置的选中状态
      *
      * @param index
      * @param selected
      */
     void setSelected(int index, boolean selected);
-
-    /**
-     * 模拟点击该项
-     *
-     * @param item
-     */
-    void performClick(T item);
 
     /**
      * 设置该项的选中状态

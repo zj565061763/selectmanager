@@ -182,6 +182,15 @@ public class FSelectManager<T> implements SelectManager<T>
     }
 
     @Override
+    public final void performClick(T item)
+    {
+        if (indexOf(item) < 0)
+            return;
+
+        setSelectedInternal(item, !isSelected(item));
+    }
+
+    @Override
     public final void setSelected(int index, boolean selected)
     {
         if (!isIndexLegal(index))
@@ -189,15 +198,6 @@ public class FSelectManager<T> implements SelectManager<T>
 
         final T item = mListItem.get(index);
         setSelectedInternal(item, selected);
-    }
-
-    @Override
-    public final void performClick(T item)
-    {
-        if (indexOf(item) < 0)
-            return;
-
-        setSelectedInternal(item, !isSelected(item));
     }
 
     @Override
