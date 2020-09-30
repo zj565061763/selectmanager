@@ -504,6 +504,9 @@ public class FSelectManager<T> implements SelectManager<T>
 
     private void initItem(T item)
     {
+        if (item == null)
+            throw new NullPointerException("item is null");
+
         onInitItem(item);
 
         if (mOnItemInitCallback != null)
