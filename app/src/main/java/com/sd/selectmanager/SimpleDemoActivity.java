@@ -100,6 +100,7 @@ public class SimpleDemoActivity extends AppCompatActivity implements View.OnClic
                 }
             }
         });
+        rg_mode.check(R.id.rb_single);
     }
 
     /**
