@@ -373,6 +373,28 @@ public interface SelectManager<T>
     void setOnItemInitCallback(OnItemInitCallback<T> callback);
 
     /**
+     * {@link #addStateInterceptor(StateInterceptor)}
+     *
+     * @param interceptor
+     */
+    @Deprecated
+    void setSelectedInterceptor(SelectedInterceptor<T> interceptor);
+
+    /**
+     * 添加拦截对象
+     *
+     * @param interceptor
+     */
+    void addStateInterceptor(StateInterceptor<T> interceptor);
+
+    /**
+     * 移除拦截对象
+     *
+     * @param interceptor
+     */
+    void removeStateInterceptor(StateInterceptor<T> interceptor);
+
+    /**
      * 设置选择模式
      *
      * @param mode
@@ -435,19 +457,19 @@ public interface SelectManager<T>
     void performClick(int index);
 
     /**
+     * 模拟点击该项
+     *
+     * @param item
+     */
+    void performClick(T item);
+
+    /**
      * 设置该位置的选中状态
      *
      * @param index
      * @param selected
      */
     void setSelected(int index, boolean selected);
-
-    /**
-     * 模拟点击该项
-     *
-     * @param item
-     */
-    void performClick(T item);
 
     /**
      * 设置该项的选中状态
@@ -584,28 +606,39 @@ public interface SelectManager<T>
         void onInitItem(T item);
     }
 
-    interface Selectable
+    /**
+     * 状态拦截
+     *
+     * @param <T>
+     */
+    interface StateInterceptor<T>
     {
-        boolean isSelected();
-
-        void setSelected(boolean selected);
+        /**
+         * 拦截
+         *
+         * @param item
+         * @param selected
+         * @return true-拦截掉，
+         */
+        boolean interceptItem(T item, boolean selected);
     }
 
-    class SelectableModel implements Selectable
+    /**
+     * 用{@link StateInterceptor}替代
+     *
+     * @param <T>
+     */
+    @Deprecated
+    interface SelectedInterceptor<T>
     {
-        private boolean selected;
-
-        @Override
-        public boolean isSelected()
-        {
-            return selected;
-        }
-
-        @Override
-        public void setSelected(boolean selected)
-        {
-            this.selected = selected;
-        }
+        /**
+         * 拦截
+         *
+         * @param item
+         * @param selected
+         * @return true-拦截掉，
+         */
+        boolean interceptItem(T item, boolean selected);
     }
 }
 ```
