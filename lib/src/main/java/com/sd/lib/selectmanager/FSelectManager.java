@@ -314,7 +314,15 @@ public class FSelectManager<T> implements SelectManager<T>
                 return true;
         }
 
-        // TODO 判断拦截
+        if (mStateInterceptorHolder != null)
+        {
+            for (StateInterceptor<T> interceptor : mStateInterceptorHolder.keySet())
+            {
+                if (interceptor.interceptItem(item, selected))
+                    return true;
+            }
+        }
+
         return false;
     }
 
