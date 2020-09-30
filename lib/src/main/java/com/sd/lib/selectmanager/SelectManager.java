@@ -26,11 +26,26 @@ public interface SelectManager<T>
     void setOnItemInitCallback(OnItemInitCallback<T> callback);
 
     /**
-     * 设置选中状态拦截
+     * {@link #addStateInterceptor(StateInterceptor)}
      *
      * @param interceptor
      */
+    @Deprecated
     void setSelectedInterceptor(SelectedInterceptor<T> interceptor);
+
+    /**
+     * 添加拦截对象
+     *
+     * @param interceptor
+     */
+    void addStateInterceptor(StateInterceptor<T> interceptor);
+
+    /**
+     * 移除拦截对象
+     *
+     * @param interceptor
+     */
+    void removeStateInterceptor(StateInterceptor<T> interceptor);
 
     /**
      * 设置选择模式
@@ -244,6 +259,29 @@ public interface SelectManager<T>
         void onInitItem(T item);
     }
 
+    /**
+     * 状态拦截
+     *
+     * @param <T>
+     */
+    interface StateInterceptor<T>
+    {
+        /**
+         * 拦截
+         *
+         * @param item
+         * @param selected
+         * @return true-拦截掉，
+         */
+        boolean interceptItem(T item, boolean selected);
+    }
+
+    /**
+     * 用{@link StateInterceptor}替代
+     *
+     * @param <T>
+     */
+    @Deprecated
     interface SelectedInterceptor<T>
     {
         /**

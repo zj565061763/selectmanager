@@ -6,6 +6,7 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -24,6 +25,8 @@ public class FSelectManager<T> implements SelectManager<T>
     private final List<Callback<T>> mListCallback = new CopyOnWriteArrayList<>();
     private OnItemInitCallback<T> mOnItemInitCallback;
     private SelectedInterceptor<T> mSelectedInterceptor;
+
+    private Map<StateInterceptor<T>, String> mStateInterceptorHolder;
 
     @Override
     public final void addCallback(final Callback<T> callback)
@@ -50,6 +53,32 @@ public class FSelectManager<T> implements SelectManager<T>
     public final void setSelectedInterceptor(SelectedInterceptor<T> interceptor)
     {
         mSelectedInterceptor = interceptor;
+    }
+
+    @Override
+    public final void addStateInterceptor(StateInterceptor<T> interceptor)
+    {
+        if (interceptor == null)
+            return;
+
+        if (mStateInterceptorHolder == null)
+            mStateInterceptorHolder = new ConcurrentHashMap<>();
+
+        mStateInterceptorHolder.put(interceptor, "");
+    }
+
+    @Override
+    public final void removeStateInterceptor(StateInterceptor<T> interceptor)
+    {
+        if (interceptor == null)
+            return;
+
+        if (mStateInterceptorHolder == null)
+            return;
+
+        mStateInterceptorHolder.remove(interceptor);
+        if (mStateInterceptorHolder.isEmpty())
+            mStateInterceptorHolder = null;
     }
 
     @Override
