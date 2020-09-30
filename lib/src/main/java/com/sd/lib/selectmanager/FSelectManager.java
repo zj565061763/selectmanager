@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 选择管理器
@@ -22,25 +21,28 @@ public class FSelectManager<T> implements SelectManager<T>
     private T mCurrentItem;
     private final Map<T, String> mMapSelected = new IdentityHashMap<>();
 
-    private final List<Callback<T>> mListCallback = new CopyOnWriteArrayList<>();
     private OnItemInitCallback<T> mOnItemInitCallback;
     private SelectedInterceptor<T> mSelectedInterceptor;
 
+    private final Map<Callback<T>, String> mCallbackHolder = new ConcurrentHashMap<>();
     private Map<StateInterceptor<T>, String> mStateInterceptorHolder;
 
     @Override
     public final void addCallback(final Callback<T> callback)
     {
-        if (callback == null || mListCallback.contains(callback))
+        if (callback == null)
             return;
 
-        mListCallback.add(callback);
+        mCallbackHolder.put(callback, "");
     }
 
     @Override
     public final void removeCallback(final Callback<T> callback)
     {
-        mListCallback.remove(callback);
+        if (callback == null)
+            return;
+
+        mCallbackHolder.remove(callback);
     }
 
     @Override
@@ -360,7 +362,7 @@ public class FSelectManager<T> implements SelectManager<T>
 
         onSelectedChanged(false, item);
 
-        for (Callback<T> callback : mListCallback)
+        for (Callback<T> callback : mCallbackHolder.keySet())
         {
             callback.onSelectedChanged(false, item);
         }
@@ -373,7 +375,7 @@ public class FSelectManager<T> implements SelectManager<T>
 
         onSelectedChanged(true, item);
 
-        for (Callback<T> callback : mListCallback)
+        for (Callback<T> callback : mCallbackHolder.keySet())
         {
             callback.onSelectedChanged(true, item);
         }
