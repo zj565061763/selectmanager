@@ -48,6 +48,20 @@ public interface SelectManager<T>
     void removeStateInterceptor(StateInterceptor<T> interceptor);
 
     /**
+     * 添加回调对象
+     *
+     * @param callback
+     */
+    void addSingleSelectCallback(SingleSelectCallback<T> callback);
+
+    /**
+     * 移除回调对象
+     *
+     * @param callback
+     */
+    void removeSingleSelectCallback(SingleSelectCallback<T> callback);
+
+    /**
      * 设置选择模式
      *
      * @param mode
@@ -274,6 +288,18 @@ public interface SelectManager<T>
          * @return true-拦截掉，
          */
         boolean interceptItem(T item, boolean selected);
+    }
+
+    interface SingleSelectCallback<T>
+    {
+        /**
+         * 单选模式下，选中项回调
+         * <br>
+         * {@link Mode#SINGLE}或者{@link Mode#SINGLE_MUST_ONE_SELECTED}
+         *
+         * @param item
+         */
+        void onSelectedChanged(T item);
     }
 
     /**

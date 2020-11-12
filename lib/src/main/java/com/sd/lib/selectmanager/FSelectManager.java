@@ -25,6 +25,8 @@ public class FSelectManager<T> implements SelectManager<T>
     private OnItemInitCallback<T> mOnItemInitCallback;
     private Map<StateInterceptor<T>, String> mStateInterceptorHolder;
 
+    private Map<SingleSelectCallback<T>, String> mSingleSelectCallbackHolder;
+
     private SelectedInterceptor<T> mSelectedInterceptor;
 
     @Override
@@ -81,6 +83,32 @@ public class FSelectManager<T> implements SelectManager<T>
         mStateInterceptorHolder.remove(interceptor);
         if (mStateInterceptorHolder.isEmpty())
             mStateInterceptorHolder = null;
+    }
+
+    @Override
+    public void addSingleSelectCallback(SingleSelectCallback<T> callback)
+    {
+        if (callback == null)
+            return;
+
+        if (mSingleSelectCallbackHolder == null)
+            mSingleSelectCallbackHolder = new ConcurrentHashMap<>();
+
+        mSingleSelectCallbackHolder.put(callback, "");
+    }
+
+    @Override
+    public void removeSingleSelectCallback(SingleSelectCallback<T> callback)
+    {
+        if (callback == null)
+            return;
+
+        if (mSingleSelectCallbackHolder == null)
+            return;
+
+        mSingleSelectCallbackHolder.remove(callback);
+        if (mSingleSelectCallbackHolder.isEmpty())
+            mSingleSelectCallbackHolder = null;
     }
 
     @Override
@@ -218,7 +246,8 @@ public class FSelectManager<T> implements SelectManager<T>
             if (mCurrentItem != null)
             {
                 final T old = mCurrentItem;
-                mCurrentItem = null;
+                setCurrentItem(null);
+
                 notifyNormal(old);
             }
         } else
@@ -264,7 +293,7 @@ public class FSelectManager<T> implements SelectManager<T>
                             return;
 
                         final T old = mCurrentItem;
-                        mCurrentItem = null;
+                        setCurrentItem(null);
 
                         notifyNormal(old);
                     }
@@ -339,7 +368,7 @@ public class FSelectManager<T> implements SelectManager<T>
             return;
 
         final T old = mCurrentItem;
-        mCurrentItem = item;
+        setCurrentItem(item);
 
         notifyNormal(old);
         notifySelected(item);
@@ -394,6 +423,22 @@ public class FSelectManager<T> implements SelectManager<T>
 
     }
 
+    private void setCurrentItem(final T item)
+    {
+        if (mCurrentItem != item)
+        {
+            mCurrentItem = item;
+
+            if (mSingleSelectCallbackHolder != null)
+            {
+                for (SingleSelectCallback<T> callback : mSingleSelectCallbackHolder.keySet())
+                {
+                    callback.onSelectedChanged(item);
+                }
+            }
+        }
+    }
+
     //---------- data start ----------
 
     @Override
@@ -410,7 +455,7 @@ public class FSelectManager<T> implements SelectManager<T>
     @Override
     public final void setItems(List<T> items)
     {
-        mCurrentItem = null;
+        setCurrentItem(null);
         mMapSelected.clear();
         mListItem.clear();
 

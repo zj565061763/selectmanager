@@ -2,11 +2,13 @@ package com.sd.selectmanager;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.sd.lib.selectmanager.FSelectManager;
 import com.sd.lib.selectmanager.SelectManager;
@@ -15,6 +17,8 @@ import java.util.List;
 
 public class SimpleDemoActivity extends AppCompatActivity implements View.OnClickListener
 {
+    public static final String TAG = SimpleDemoActivity.class.getSimpleName();
+
     private RadioGroup rg_mode;
     private Button btn_0, btn_1, btn_2;
     private TextView tv_selected_info;
@@ -47,6 +51,8 @@ public class SimpleDemoActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onSelectedChanged(boolean selected, Button item)
             {
+                Log.i(TAG, "onSelectedChanged:" + selected + " " + item);
+
                 if (selected)
                     item.setTextColor(Color.RED);
                 else
@@ -55,6 +61,16 @@ public class SimpleDemoActivity extends AppCompatActivity implements View.OnClic
                 updateSelectedInfo();
             }
         });
+
+        mSelectManager.addSingleSelectCallback(new SelectManager.SingleSelectCallback<Button>()
+        {
+            @Override
+            public void onSelectedChanged(Button item)
+            {
+                Log.i(TAG, "SingleSelectCallback onSelectedChanged:" + item);
+            }
+        });
+
         mSelectManager.setItems(btn_0, btn_1, btn_2); // 设置要管理的数据
     }
 
