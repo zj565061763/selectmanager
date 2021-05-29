@@ -23,7 +23,7 @@ public class FSelectViewManager<T extends View> extends FSelectManager<T> implem
     @Override
     public void onClick(View v)
     {
-        if (getMode() == Mode.MULTI_MUST_ONE_SELECTED)
+        if (getMode() == Mode.SINGLE_MUST_ONE_SELECTED)
         {
             final T selectedItem = getSelectedItem();
             if (selectedItem != null && selectedItem == v)
