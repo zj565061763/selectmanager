@@ -23,6 +23,20 @@ public class FSelectViewManager<T extends View> extends FSelectManager<T> implem
     @Override
     public void onClick(View v)
     {
+        if (getMode() == Mode.MULTI_MUST_ONE_SELECTED)
+        {
+            final T selectedItem = getSelectedItem();
+            if (selectedItem != null && selectedItem == v)
+                onSingleSelectedItemClick(selectedItem);
+        }
+
         performClick((T) v);
+    }
+
+    /**
+     * 已经选中的Item被点击（单选模式）
+     */
+    protected void onSingleSelectedItemClick(T item)
+    {
     }
 }
