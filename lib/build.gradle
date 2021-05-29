@@ -5,8 +5,8 @@ plugins {
 
 def libGroupId = "com.sd.lib.android"
 def libArtifactId = "selectmanager"
-def libVersionCode = 20210529
-def libVersionName = "1.1.7"
+def libVersionCode = 20210530
+def libVersionName = "1.1.8"
 
 android {
     compileSdkVersion 30
