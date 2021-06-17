@@ -15,8 +15,7 @@ import com.sd.lib.selectmanager.SelectManager;
 
 import java.util.List;
 
-public class SimpleDemoActivity extends AppCompatActivity implements View.OnClickListener
-{
+public class SimpleDemoActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String TAG = SimpleDemoActivity.class.getSimpleName();
 
     private RadioGroup rg_mode;
@@ -26,8 +25,7 @@ public class SimpleDemoActivity extends AppCompatActivity implements View.OnClic
     private final SelectManager<Button> mSelectManager = new FSelectManager<>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_demo);
         rg_mode = findViewById(R.id.rg_mode);
@@ -43,30 +41,26 @@ public class SimpleDemoActivity extends AppCompatActivity implements View.OnClic
         initSelectManager();
     }
 
-    private void initSelectManager()
-    {
+    private void initSelectManager() {
         // 添加状态变更回调
-        mSelectManager.addCallback(new SelectManager.Callback<Button>()
-        {
+        mSelectManager.addCallback(new SelectManager.Callback<Button>() {
             @Override
-            public void onSelectedChanged(boolean selected, Button item)
-            {
+            public void onSelectedChanged(boolean selected, Button item) {
                 Log.i(TAG, "onSelectedChanged:" + selected + " " + item);
 
-                if (selected)
+                if (selected) {
                     item.setTextColor(Color.RED);
-                else
+                } else {
                     item.setTextColor(Color.BLACK);
+                }
 
                 updateSelectedInfo();
             }
         });
 
-        mSelectManager.addSingleSelectCallback(new SelectManager.SingleSelectCallback<Button>()
-        {
+        mSelectManager.addSingleSelectCallback(new SelectManager.SingleSelectCallback<Button>() {
             @Override
-            public void onSelectedChanged(Button item)
-            {
+            public void onSelectedChanged(Button item) {
                 Log.i(TAG, "SingleSelectCallback onSelectedChanged:" + item);
             }
         });
@@ -75,8 +69,7 @@ public class SimpleDemoActivity extends AppCompatActivity implements View.OnClic
     }
 
     @Override
-    public void onClick(View v)
-    {
+    public void onClick(View v) {
         /**
          * 模拟点击某一项
          */
@@ -88,15 +81,11 @@ public class SimpleDemoActivity extends AppCompatActivity implements View.OnClic
 //        mSelectManager.setSelected(btn_0, true);
     }
 
-    private void initRadioGroup()
-    {
-        rg_mode.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
+    private void initRadioGroup() {
+        rg_mode.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId)
-            {
-                switch (checkedId)
-                {
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
                     case R.id.rb_single:
                         // 设置单选模式
                         mSelectManager.setMode(SelectManager.Mode.SINGLE);
@@ -122,19 +111,16 @@ public class SimpleDemoActivity extends AppCompatActivity implements View.OnClic
     /**
      * 更新选中的信息
      */
-    private void updateSelectedInfo()
-    {
+    private void updateSelectedInfo() {
         String info = "";
-        if (mSelectManager.getMode().isSingleType())
-        {
+        if (mSelectManager.getMode().isSingleType()) {
             final Button button = mSelectManager.getSelectedItem(); // 获得选中的项
-            if (button != null)
+            if (button != null) {
                 info = button.getText().toString();
-        } else
-        {
+            }
+        } else {
             final List<Button> buttons = mSelectManager.getSelectedItems(); // 获得选中的项
-            for (Button item : buttons)
-            {
+            for (Button item : buttons) {
                 info += item.getText().toString();
                 info += "\r\n";
             }
