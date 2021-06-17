@@ -28,7 +28,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation project(':lib')
 
-    implementation('com.github.zj565061763:adapter:1.2.1-beta10') {
+    implementation('com.github.zj565061763:adapter:1.2.2-beta01') {
         exclude module: 'selectmanager'
     }
 }
