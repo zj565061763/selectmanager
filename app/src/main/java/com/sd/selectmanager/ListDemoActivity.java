@@ -41,10 +41,7 @@ public class ListDemoActivity extends AppCompatActivity {
             }
         });
 
-        for (int i = 0; i < 50; i++) {
-            DataModel model = new DataModel();
-            model.name = String.valueOf(i);
-            mAdapter.getDataHolder().addData(model); // 向adapter添加数据
-        }
+        // 设置数据
+        mAdapter.getDataHolder().setData(DataModel.get(50));
     }
 }
